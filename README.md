@@ -1,24 +1,186 @@
-# familymedicinesystemadmin
+# 家庭药品管理系统前端
 
-## Project setup
+基于Vue2 + Element UI的家庭药品管理系统PC端管理界面。
+
+## 功能特性
+
+### 🏠 首页
+- 统计卡片展示（药品总数、即将过期、库存不足、今日提醒）
+- 今日用药提醒列表
+- 即将过期药品提醒
+- 快捷操作入口
+
+### 💊 药品管理
+- **药品列表**：完整的药品信息管理，支持搜索、筛选、增删改查
+- **扫码录入**：支持摄像头扫码和图片上传识别药品信息
+- **库存管理**：实时库存监控，支持库存更新操作
+
+### ⏰ 用药提醒
+- **提醒日历**：月历视图展示用药提醒，支持添加、编辑、删除提醒
+- **用药记录**：完整的用药记录查询，支持统计分析
+- **提醒确认**：支持用药状态确认和补录操作
+
+### 👥 家庭成员
+- 成员信息管理
+- 过敏史记录
+- 用药计划分配
+
+## 技术栈
+
+- **前端框架**: Vue 2.6.11
+- **UI组件库**: Element UI 2.15.14
+- **路由管理**: Vue Router 3.6.5
+- **状态管理**: Vuex 3.6.2
+- **HTTP请求**: Axios 1.13.2
+- **日期处理**: Moment.js
+- **扫码功能**: 模拟扫码实现
+
+## 项目结构
+
 ```
+src/
+├── api/                    # API接口
+│   ├── auth.js            # 认证相关接口
+│   ├── medicine.js        # 药品管理接口
+│   ├── medication.js      # 用药提醒接口
+│   └── family.js          # 家庭成员接口
+├── components/             # 公共组件
+│   └── Layout.vue         # 主布局组件
+├── views/                  # 页面组件
+│   ├── Login.vue          # 登录页面
+│   ├── Home.vue           # 首页
+│   ├── medicine/          # 药品管理
+│   │   ├── MedicineList.vue    # 药品列表
+│   │   └── ScanMedicine.vue    # 扫码录入
+│   └── medication/        # 用药提醒
+│       ├── Calendar.vue         # 提醒日历
+│       └── Records.vue          # 用药记录
+├── router/                 # 路由配置
+├── utils/                  # 工具函数
+├── store/                  # 状态管理
+└── assets/                 # 静态资源
+```
+
+## 安装和运行
+
+### 环境要求
+- Node.js >= 14.0.0
+- npm >= 6.0.0
+
+### 安装依赖
+```bash
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
+### 开发环境运行
+```bash
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
+### 生产环境构建
+```bash
 npm run build
 ```
 
-### Lints and fixes files
-```
+### 代码检查
+```bash
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 后端接口配置
+
+项目默认连接后端地址：`http://localhost:8080/api`
+
+如需修改，请编辑 `src/api/request.js` 文件中的 `baseURL` 配置：
+
+```javascript
+const service = axios.create({
+  baseURL: 'http://your-backend-url/api', // 修改为实际后端地址
+  timeout: 10000
+})
+```
+
+## 主要功能说明
+
+### 1. 药品管理
+- 支持药品信息的增删改查
+- 图片上传和说明书管理
+- 库存实时监控和预警
+- 批量操作和数据导出
+
+### 2. 扫码录入
+- 摄像头实时扫码识别
+- 图片上传识别药品信息
+- 扫码历史记录管理
+- 手动补充药品信息
+
+### 3. 用药提醒
+- 日历视图展示用药计划
+- 支持单次、每日、每周、每月重复提醒
+- 用药状态确认和补录
+- 提醒统计分析
+
+### 4. 数据统计
+- 用药记录统计
+- 药品使用频率分析
+- 服用率统计
+- 数据可视化展示
+
+## 开发说明
+
+### API接口规范
+所有API接口都遵循统一的响应格式：
+
+```javascript
+{
+  "code": 200,        // 状态码
+  "message": "成功",   // 消息
+  "data": {...}       // 数据
+}
+```
+
+### 错误处理
+- 统一的错误拦截和处理
+- 友好的错误提示信息
+- Token失效自动跳转登录
+
+### 权限控制
+- JWT Token认证
+- 路由权限验证
+- 接口权限控制
+
+## 部署说明
+
+### 开发环境
+```bash
+npm run serve
+```
+访问地址：http://localhost:8080
+
+### 生产环境
+```bash
+npm run build
+```
+构建完成后，将 `dist` 目录部署到Web服务器。
+
+## 浏览器支持
+
+- Chrome >= 60
+- Firefox >= 60
+- Safari >= 12
+- Edge >= 79
+
+## 贡献指南
+
+1. Fork 项目
+2. 创建功能分支
+3. 提交代码
+4. 发起 Pull Request
+
+## 许可证
+
+MIT License
+
+## 联系方式
+
+如有问题或建议，请联系开发团队。
