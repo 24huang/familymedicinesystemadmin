@@ -1,0 +1,15 @@
+<svg width="32" height="32" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- 简化版logo用于favicon -->
+  <circle cx="100" cy="100" r="90" fill="#409EFF"/>
+  
+  <!-- 药丸形状 -->
+  <ellipse cx="100" cy="85" rx="20" ry="12" fill="#FF6B6B" transform="rotate(-30 100 85)"/>
+  <ellipse cx="100" cy="85" rx="20" ry="12" fill="#4ECDC4" transform="rotate(-30 100 85)" opacity="0.7"/>
+  
+  <!-- 心形图标 -->
+  <path d="M100,115 C92,102 76,94 76,82 C76,74 82,70 88,70 C94,70 98,74 100,78 C102,74 106,70 112,70 C118,70 124,74 124,82 C124,94 108,102 100,115 Z" fill="#E74C3C"/>
+  
+  <!-- 十字医疗符号 -->
+  <rect x="96" y="105" width="8" height="24" fill="#2C3E50" rx="1"/>
+  <rect x="88" y="113" width="24" height="8" fill="#2C3E50" rx="1"/>
+</svg>

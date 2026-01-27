@@ -3,7 +3,7 @@
     <!-- 侧边栏 -->
     <div class="sidebar" :class="{ collapsed: isCollapse }">
       <div class="logo">
-        <img src="../assets/logo.png" alt="Logo" :style="{ width: isCollapse ? '32px' : '40px', height: 'auto' }">
+        <img src="../assets/logo.svg" alt="Logo" :style="{ width: isCollapse ? '32px' : '40px', height: 'auto' }">
         <span v-if="!isCollapse">家庭药品管理</span>
       </div>
       
@@ -27,7 +27,7 @@
             <span>药品管理</span>
           </template>
           <el-menu-item index="/medicine/list">药品列表</el-menu-item>
-          <el-menu-item index="/medicine/scan">扫码录入</el-menu-item>
+          <el-menu-item index="/medicine/scan">药品录入</el-menu-item>
           <el-menu-item index="/medicine/stock">库存管理</el-menu-item>
         </el-submenu>
         

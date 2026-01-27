@@ -191,6 +191,8 @@ export default {
             })
             .catch(error => {
               console.error('登录失败:', error)
+              const errorMessage = error.response?.data?.message || error.message || '登录失败，请检查用户名和密码'
+              this.$message.error(errorMessage)
             })
             .finally(() => {
               this.loading = false
@@ -203,9 +205,15 @@ export default {
       this.$refs.registerForm.validate(valid => {
         if (valid) {
           this.registerLoading = true
-          const { confirmPassword, ...registerData } = this.registerForm
+          const registerData = {
+            username: this.registerForm.username,
+            password: this.registerForm.password,
+            nickname: this.registerForm.nickname,
+            phone: this.registerForm.phone,
+            email: this.registerForm.email
+          }
           register(registerData)
-            .then(response => {
+            .then(() => {
               this.$message.success('注册成功，请登录')
               this.showRegister = false
               // 清空注册表单

@@ -164,7 +164,7 @@
             icon="el-icon-plus"
             @click="$router.push('/medicine/scan')"
           >
-            扫码录入药品
+            录入药品
           </el-button>
           
           <el-button

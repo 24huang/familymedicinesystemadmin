@@ -1,0 +1,26 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆形 -->
+  <circle cx="100" cy="100" r="95" fill="#409EFF" opacity="0.1"/>
+  <circle cx="100" cy="100" r="85" fill="#409EFF" opacity="0.2"/>
+  
+  <!-- 药丸形状 -->
+  <ellipse cx="100" cy="80" rx="25" ry="15" fill="#FF6B6B" transform="rotate(-30 100 80)"/>
+  <ellipse cx="100" cy="80" rx="25" ry="15" fill="#4ECDC4" transform="rotate(-30 100 80)" opacity="0.7"/>
+  
+  <!-- 心形图标 -->
+  <path d="M100,120 C90,105 70,95 70,80 C70,70 78,65 85,65 C92,65 97,70 100,75 C103,70 108,65 115,65 C122,65 130,70 130,80 C130,95 110,105 100,120 Z" fill="#E74C3C"/>
+  
+  <!-- 十字医疗符号 -->
+  <rect x="95" y="110" width="10" height="30" fill="#2C3E50" rx="2"/>
+  <rect x="85" y="120" width="30" height="10" fill="#2C3E50" rx="2"/>
+  
+  <!-- 家庭元素 - 小房子 -->
+  <path d="M60,140 L60,160 L80,160 L80,140 L70,130 Z" fill="#F39C12" opacity="0.8"/>
+  <path d="M120,140 L120,160 L140,160 L140,140 L130,130 Z" fill="#F39C12" opacity="0.8"/>
+  
+  <!-- 装饰性圆点 -->
+  <circle cx="50" cy="50" r="3" fill="#409EFF" opacity="0.6"/>
+  <circle cx="150" cy="50" r="3" fill="#409EFF" opacity="0.6"/>
+  <circle cx="50" cy="150" r="3" fill="#409EFF" opacity="0.6"/>
+  <circle cx="150" cy="150" r="3" fill="#409EFF" opacity="0.6"/>
+</svg>

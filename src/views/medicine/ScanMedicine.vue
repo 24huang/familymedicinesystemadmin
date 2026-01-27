@@ -1,79 +1,89 @@
 <template>
-  <div class="scan-medicine-container">
-    <el-card class="scan-card">
+  <div class="medicine-add-container">
+    <el-card class="add-card">
       <div slot="header">
-        <span>扫码录入药品</span>
+        <span>药品录入</span>
+        <el-button type="text" @click="$router.push('/medicine/list')">
+          返回列表
+        </el-button>
       </div>
       
-      <div class="scan-content">
-        <!-- 扫码区域 -->
-        <div class="scan-area">
-          <div class="scan-box" :class="{ scanning: isScanning }">
-            <video
-              ref="video"
-              class="scan-video"
-              :style="{ display: showVideo ? 'block' : 'none' }"
-            />
-            <canvas
-              ref="canvas"
-              class="scan-canvas"
-              :style="{ display: showVideo ? 'none' : 'block' }"
-            />
-            
-            <div v-if="!showVideo" class="scan-placeholder">
-              <i class="el-icon-camera"></i>
-              <p>点击下方按钮开始扫码</p>
+      <div class="add-content">
+        <!-- 快速录入区域 -->
+        <div class="quick-add-area">
+          <div class="quick-add-box">
+            <div class="quick-add-header">
+              <h3>快速录入</h3>
+              <p>支持条形码/二维码识别，或手动录入药品信息</p>
             </div>
             
-            <div v-if="isScanning" class="scan-overlay">
-              <div class="scan-line"></div>
+            <div class="quick-add-actions">
+              <el-button
+                type="primary"
+                icon="el-icon-camera"
+                @click="handleImageUpload"
+              >
+                上传药品图片识别
+              </el-button>
+              
+              <el-button
+                type="success"
+                icon="el-icon-edit"
+                @click="showManualForm = true"
+              >
+                手动录入药品信息
+              </el-button>
+              
+              <input
+                ref="fileInput"
+                type="file"
+                accept="image/*"
+                style="display: none"
+                @change="handleFileChange"
+              />
             </div>
-          </div>
-          
-          <div class="scan-controls">
-            <el-button
-              type="primary"
-              :icon="showVideo ? 'el-icon-video-camera' : 'el-icon-camera'"
-              :loading="isScanning"
-              @click="toggleScan"
-            >
-              {{ showVideo ? '停止扫码' : '开始扫码' }}
-            </el-button>
             
-            <el-button
-              type="success"
-              icon="el-icon-upload"
-              @click="handleFileUpload"
-            >
-              上传图片
-            </el-button>
-            
-            <input
-              ref="fileInput"
-              type="file"
-              accept="image/*"
-              style="display: none"
-              @change="handleFileChange"
-            />
+            <!-- 图片预览区域 -->
+            <div v-if="previewImage" class="preview-area">
+              <div class="preview-image">
+                <img :src="previewImage" alt="药品图片" />
+              </div>
+              <div class="preview-actions">
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="recognizeImage"
+                  :loading="recognizing"
+                >
+                  {{ recognizing ? '识别中...' : '开始识别' }}
+                </el-button>
+                <el-button
+                  size="small"
+                  @click="clearPreview"
+                >
+                  重新选择
+                </el-button>
+              </div>
+            </div>
           </div>
         </div>
         
-        <!-- 扫码结果 -->
-        <div class="scan-result">
-          <div v-if="scanResult" class="result-content">
-            <h3>扫码结果</h3>
+        <!-- 识别结果 -->
+        <div class="result-area">
+          <div v-if="recognitionResult" class="result-content">
+            <h3>识别结果</h3>
             <div class="result-info">
               <div class="result-item">
                 <label>药品名称：</label>
-                <span>{{ scanResult.name || '未识别' }}</span>
+                <span>{{ recognitionResult.name || '未识别' }}</span>
               </div>
               <div class="result-item">
                 <label>条形码：</label>
-                <span>{{ scanResult.barcode || '未识别' }}</span>
+                <span>{{ recognitionResult.barcode || '未识别' }}</span>
               </div>
               <div class="result-item">
-                <label>二维码：</label>
-                <span>{{ scanResult.qrCode || '未识别' }}</span>
+                <label>识别置信度：</label>
+                <span>{{ recognitionResult.confidence || '0' }}%</span>
               </div>
             </div>
             
@@ -81,22 +91,22 @@
               <el-button
                 type="primary"
                 icon="el-icon-plus"
-                @click="handleAddMedicine"
+                @click="useRecognitionResult"
               >
-                添加到药品库
+                使用此信息
               </el-button>
               <el-button
                 icon="el-icon-refresh"
-                @click="resetScan"
+                @click="resetRecognition"
               >
-                重新扫码
+                重新识别
               </el-button>
             </div>
           </div>
           
           <div v-else class="result-placeholder">
             <i class="el-icon-document"></i>
-            <p>扫码结果将显示在这里</p>
+            <p>识别结果将显示在这里</p>
           </div>
         </div>
       </div>
@@ -105,25 +115,30 @@
     <!-- 手动录入表单 -->
     <el-card v-if="showManualForm" class="manual-form-card">
       <div slot="header">
-        <span>手动录入药品信息</span>
+        <span>药品信息录入</span>
+        <el-button
+          type="text"
+          icon="el-icon-close"
+          @click="showManualForm = false"
+        />
       </div>
       
       <el-form
-        ref="manualForm"
-        :model="manualForm"
-        :rules="manualRules"
+        ref="medicineForm"
+        :model="medicineForm"
+        :rules="medicineRules"
         label-width="100px"
       >
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="药品名称" prop="name">
-              <el-input v-model="manualForm.name" placeholder="请输入药品名称" />
+              <el-input v-model="medicineForm.name" placeholder="请输入药品名称" />
             </el-form-item>
           </el-col>
           
           <el-col :span="12">
             <el-form-item label="药品分类" prop="category">
-              <el-select v-model="manualForm.category" placeholder="请选择分类">
+              <el-select v-model="medicineForm.category" placeholder="请选择分类">
                 <el-option
                   v-for="category in categories"
                   :key="category.value"
@@ -138,13 +153,13 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="规格" prop="specification">
-              <el-input v-model="manualForm.specification" placeholder="如：10mg*24片" />
+              <el-input v-model="medicineForm.specification" placeholder="如：10mg*24片" />
             </el-form-item>
           </el-col>
           
           <el-col :span="12">
             <el-form-item label="生产厂家" prop="manufacturer">
-              <el-input v-model="manualForm.manufacturer" placeholder="请输入生产厂家" />
+              <el-input v-model="medicineForm.manufacturer" placeholder="请输入生产厂家" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -153,7 +168,7 @@
           <el-col :span="8">
             <el-form-item label="库存数量" prop="stock">
               <el-input-number
-                v-model="manualForm.stock"
+                v-model="medicineForm.stock"
                 :min="0"
                 :max="9999"
                 placeholder="请输入库存数量"
@@ -164,7 +179,7 @@
           <el-col :span="8">
             <el-form-item label="过期日期" prop="expiryDate">
               <el-date-picker
-                v-model="manualForm.expiryDate"
+                v-model="medicineForm.expiryDate"
                 type="date"
                 placeholder="请选择过期日期"
                 value-format="yyyy-MM-dd"
@@ -174,14 +189,43 @@
           
           <el-col :span="8">
             <el-form-item label="条形码">
-              <el-input v-model="manualForm.barcode" placeholder="扫码自动填充" />
+              <el-input v-model="medicineForm.barcode" placeholder="扫码自动填充" />
             </el-form-item>
           </el-col>
         </el-row>
         
+        <el-form-item label="药品图片">
+          <el-upload
+            action="#"
+            list-type="picture-card"
+            :auto-upload="false"
+            :file-list="imageFileList"
+            :on-change="handleImageChange"
+            :on-remove="handleImageRemove"
+            :limit="1"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </el-form-item>
+        
+        <el-form-item label="说明书">
+          <el-upload
+            action="#"
+            :auto-upload="false"
+            :file-list="instructionFileList"
+            :on-change="handleInstructionChange"
+            :on-remove="handleInstructionRemove"
+            :limit="1"
+            accept=".pdf"
+          >
+            <el-button size="small" type="primary">选择文件</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传PDF文件</div>
+          </el-upload>
+        </el-form-item>
+        
         <el-form-item label="备注">
           <el-input
-            v-model="manualForm.remark"
+            v-model="medicineForm.remark"
             type="textarea"
             :rows="3"
             placeholder="请输入备注信息"
@@ -189,36 +233,36 @@
         </el-form-item>
         
         <el-form-item>
-          <el-button type="primary" :loading="submitLoading" @click="handleManualSubmit">
+          <el-button type="primary" :loading="submitLoading" @click="handleSubmit">
             {{ submitLoading ? '提交中...' : '保存药品' }}
           </el-button>
-          <el-button @click="resetManualForm">重置</el-button>
+          <el-button @click="resetForm">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
     
-    <!-- 扫码历史 -->
+    <!-- 录入历史 -->
     <el-card class="history-card">
       <div slot="header">
-        <span>最近扫码记录</span>
+        <span>最近录入记录</span>
         <el-button type="text" @click="clearHistory">清空历史</el-button>
       </div>
       
-      <div v-if="scanHistory.length === 0" class="empty-history">
+      <div v-if="addHistory.length === 0" class="empty-history">
         <i class="el-icon-time"></i>
-        <p>暂无扫码记录</p>
+        <p>暂无录入记录</p>
       </div>
       
       <div v-else class="history-list">
         <div
-          v-for="(item, index) in scanHistory"
+          v-for="(item, index) in addHistory"
           :key="index"
           class="history-item"
         >
           <div class="history-info">
             <div class="history-name">{{ item.name || '未知药品' }}</div>
             <div class="history-detail">
-              {{ item.scanTime }} · {{ item.type === 'qr' ? '二维码' : '条形码' }}
+              {{ item.addTime }} · {{ item.type === 'manual' ? '手动录入' : '图片识别' }}
             </div>
           </div>
           <el-button
@@ -226,7 +270,7 @@
             size="small"
             @click="useHistoryItem(item)"
           >
-            使用此信息
+            查看详情
           </el-button>
         </div>
       </div>
@@ -235,17 +279,17 @@
 </template>
 
 <script>
-import { scanAddMedicine, addMedicine } from '@/api/medicine'
+import { addMedicine } from '@/api/medicine'
 
 export default {
-  name: 'ScanMedicine',
+  name: 'MedicineAdd',
   data() {
     return {
-      isScanning: false,
-      showVideo: false,
-      scanResult: null,
       showManualForm: false,
       submitLoading: false,
+      recognizing: false,
+      previewImage: null,
+      recognitionResult: null,
       categories: [
         { label: '感冒药', value: 'cold' },
         { label: '消炎药', value: 'anti-inflammatory' },
@@ -254,7 +298,7 @@ export default {
         { label: '中药', value: 'chinese' },
         { label: '其他', value: 'other' }
       ],
-      manualForm: {
+      medicineForm: {
         name: '',
         category: '',
         specification: '',
@@ -262,10 +306,9 @@ export default {
         stock: 1,
         expiryDate: '',
         barcode: '',
-        qrCode: '',
         remark: ''
       },
-      manualRules: {
+      medicineRules: {
         name: [
           { required: true, message: '请输入药品名称', trigger: 'blur' }
         ],
@@ -279,166 +322,123 @@ export default {
           { required: true, message: '请选择过期日期', trigger: 'change' }
         ]
       },
-      scanHistory: []
+      imageFileList: [],
+      instructionFileList: [],
+      addHistory: []
     }
   },
   mounted() {
-    this.loadScanHistory()
-  },
-  beforeDestroy() {
-    this.stopScan()
+    this.loadAddHistory()
   },
   methods: {
-    async toggleScan() {
-      if (this.showVideo) {
-        this.stopScan()
-      } else {
-        await this.startScan()
-      }
-    },
-    
-    async startScan() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment' }
-        })
-        
-        this.$refs.video.srcObject = stream
-        this.showVideo = true
-        this.isScanning = true
-        
-        // 开始扫码检测
-        this.startScanDetection()
-      } catch (error) {
-        console.error('无法访问摄像头:', error)
-        this.$message.error('无法访问摄像头，请检查权限设置')
-      }
-    },
-    
-    stopScan() {
-      if (this.$refs.video && this.$refs.video.srcObject) {
-        const stream = this.$refs.video.srcObject
-        stream.getTracks().forEach(track => track.stop())
-        this.$refs.video.srcObject = null
-      }
-      
-      this.showVideo = false
-      this.isScanning = false
-    },
-    
-    startScanDetection() {
-      // 模拟扫码检测（实际项目中需要集成扫码库）
-      const detectInterval = setInterval(() => {
-        if (!this.isScanning) {
-          clearInterval(detectInterval)
-          return
-        }
-        
-        // 模拟扫码成功
-        if (Math.random() > 0.95) {
-          this.handleScanSuccess({
-            type: 'barcode',
-            value: '1234567890123',
-            name: '阿莫西林胶囊'
-          })
-          clearInterval(detectInterval)
-        }
-      }, 1000)
-    },
-    
-    handleScanSuccess(result) {
-      this.scanResult = {
-        type: result.type,
-        barcode: result.type === 'barcode' ? result.value : '',
-        qrCode: result.type === 'qr' ? result.value : '',
-        name: result.name
-      }
-      
-      // 添加到历史记录
-      this.addToHistory(result)
-      
-      // 停止扫码
-      this.stopScan()
-      
-      // 显示手动录入表单
-      this.showManualForm = true
-      this.fillManualForm(result)
-    },
-    
-    handleFileUpload() {
+    handleImageUpload() {
       this.$refs.fileInput.click()
     },
     
     handleFileChange(event) {
       const file = event.target.files[0]
       if (file) {
-        this.processImageFile(file)
-      }
-    },
-    
-    async processImageFile(file) {
-      try {
         // 创建图片预览
         const reader = new FileReader()
         reader.onload = (e) => {
-          this.$refs.canvas.width = 300
-          this.$refs.canvas.height = 200
-          const ctx = this.$refs.canvas.getContext('2d')
-          const img = new Image()
-          img.onload = () => {
-            ctx.drawImage(img, 0, 0, 300, 200)
-          }
-          img.src = e.target.result
+          this.previewImage = e.target.result
         }
         reader.readAsDataURL(file)
+      }
+    },
+    
+    async recognizeImage() {
+      this.recognizing = true
+      try {
+        // 模拟图片识别过程
+        await new Promise(resolve => setTimeout(resolve, 2000))
         
-        // 模拟图片识别
-        setTimeout(() => {
-          this.handleScanSuccess({
-            type: 'qr',
-            value: 'QR_CODE_' + Date.now(),
-            name: '布洛芬缓释胶囊'
-          })
-        }, 2000)
+        // 模拟识别结果
+        this.recognitionResult = {
+          name: '阿莫西林胶囊',
+          barcode: '1234567890123',
+          confidence: 95
+        }
         
+        this.$message.success('图片识别完成')
       } catch (error) {
-        console.error('处理图片失败:', error)
-        this.$message.error('图片处理失败')
+        console.error('图片识别失败:', error)
+        this.$message.error('图片识别失败')
+      } finally {
+        this.recognizing = false
       }
     },
     
-    handleAddMedicine() {
+    clearPreview() {
+      this.previewImage = null
+      this.recognitionResult = null
+      this.$refs.fileInput.value = ''
+    },
+    
+    useRecognitionResult() {
+      this.fillFormWithResult(this.recognitionResult)
       this.showManualForm = true
-      this.fillManualForm(this.scanResult)
     },
     
-    fillManualForm(result) {
-      this.manualForm = {
-        ...this.manualForm,
+    fillFormWithResult(result) {
+      this.medicineForm = {
+        ...this.medicineForm,
         name: result.name || '',
-        barcode: result.barcode || '',
-        qrCode: result.qrCode || ''
+        barcode: result.barcode || ''
       }
     },
     
-    async handleManualSubmit() {
-      this.$refs.manualForm.validate(async valid => {
+    resetRecognition() {
+      this.recognitionResult = null
+    },
+    
+    handleImageChange(file, fileList) {
+      this.imageFileList = fileList
+    },
+    
+    handleImageRemove(file, fileList) {
+      this.imageFileList = fileList
+    },
+    
+    handleInstructionChange(file, fileList) {
+      this.instructionFileList = fileList
+    },
+    
+    handleInstructionRemove(file, fileList) {
+      this.instructionFileList = fileList
+    },
+    
+    async handleSubmit() {
+      this.$refs.medicineForm.validate(async valid => {
         if (valid) {
           this.submitLoading = true
           try {
             const formData = new FormData()
-            Object.keys(this.manualForm).forEach(key => {
-              if (this.manualForm[key] !== null && this.manualForm[key] !== undefined) {
-                formData.append(key, this.manualForm[key])
+            Object.keys(this.medicineForm).forEach(key => {
+              if (this.medicineForm[key] !== null && this.medicineForm[key] !== undefined) {
+                formData.append(key, this.medicineForm[key])
               }
             })
+            
+            // 添加文件
+            if (this.imageFileList.length > 0 && this.imageFileList[0].raw) {
+              formData.append('imageFile', this.imageFileList[0].raw)
+            }
+            if (this.instructionFileList.length > 0 && this.instructionFileList[0].raw) {
+              formData.append('instructionFile', this.instructionFileList[0].raw)
+            }
             
             await addMedicine(formData)
             this.$message.success('药品添加成功')
             
+            // 添加到历史记录
+            this.addToHistory({
+              name: this.medicineForm.name,
+              type: this.recognitionResult ? 'image' : 'manual'
+            })
+            
             // 重置表单
-            this.resetManualForm()
-            this.resetScan()
+            this.resetForm()
             
             // 跳转到药品列表
             this.$router.push('/medicine/list')
@@ -452,59 +452,157 @@ export default {
       })
     },
     
-    resetScan() {
-      this.scanResult = null
-      this.stopScan()
-    },
-    
-    resetManualForm() {
-      this.$refs.manualForm.resetFields()
+    resetForm() {
+      this.$refs.medicineForm.resetFields()
+      this.imageFileList = []
+      this.instructionFileList = []
+      this.previewImage = null
+      this.recognitionResult = null
       this.showManualForm = false
     },
     
-    addToHistory(result) {
+    addToHistory(item) {
       const historyItem = {
-        ...result,
-        scanTime: new Date().toLocaleString()
+        ...item,
+        addTime: new Date().toLocaleString()
       }
       
-      this.scanHistory.unshift(historyItem)
-      if (this.scanHistory.length > 10) {
-        this.scanHistory = this.scanHistory.slice(0, 10)
+      this.addHistory.unshift(historyItem)
+      if (this.addHistory.length > 10) {
+        this.addHistory = this.addHistory.slice(0, 10)
       }
       
       // 保存到localStorage
-      localStorage.setItem('scanHistory', JSON.stringify(this.scanHistory))
+      localStorage.setItem('addHistory', JSON.stringify(this.addHistory))
     },
     
-    loadScanHistory() {
-      const history = localStorage.getItem('scanHistory')
+    loadAddHistory() {
+      const history = localStorage.getItem('addHistory')
       if (history) {
-        this.scanHistory = JSON.parse(history)
+        this.addHistory = JSON.parse(history)
       }
     },
     
     clearHistory() {
-      this.$confirm('确定要清空扫码历史吗？', '提示', {
+      this.$confirm('确定要清空录入历史吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.scanHistory = []
-        localStorage.removeItem('scanHistory')
+        this.addHistory = []
+        localStorage.removeItem('addHistory')
         this.$message.success('历史记录已清空')
       })
     },
     
     useHistoryItem(item) {
-      this.fillManualForm(item)
-      this.showManualForm = true
+      this.$message.info(`查看药品: ${item.name}`)
+      // 这里可以跳转到药品详情页面
     }
   }
 }
 </script>
 
 <style scoped>
+.medicine-add-container {
+  padding: 0;
+}
+
+.add-card {
+  margin-bottom: 20px;
+}
+
+.add-content {
+  display: flex;
+  gap: 30px;
+}
+
+.quick-add-area {
+  flex: 1;
+}
+
+.quick-add-box {
+  border: 2px dashed #dcdfe6;
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+  background-color: #fafafa;
+}
+
+.quick-add-header h3 {
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 18px;
+}
+
+.quick-add-header p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.quick-add-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.preview-area {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #e4e7ed;
+  border-radius: 8px;
+  background-color: white;
+}
+
+.preview-image {
+  margin-bottom: 15px;
+}
+
+.preview-image img {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.preview-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.result-area {
+  flex: 1;
+  min-width: 300px;
+}
+
+.result-content {
+  padding: 20px;
+  border: 1px solid #e4e7ed;
+  border-radius: 8px;
+  background-color: white;
+}
+
+.result-content h3 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.result-item {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.result-item label {
+  width: 100px;
+  color: #666;
+}
+
+.result-item span {
+  flex: 1;
+}
+
 .scan-medicine-container {
   padding: 0;
 }
