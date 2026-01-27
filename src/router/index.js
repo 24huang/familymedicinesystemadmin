@@ -12,7 +12,7 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/login'
+    redirect: '/home'
   },
   {
     path: '/home',
@@ -68,17 +68,17 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   
-  // 如果访问的是登录页面，且已有token，则跳转到首页
-  if (to.path === '/login' && token) {
-    next('/home')
-    return
-  }
-  
-  // 如果访问的不是登录页面，且没有token，则跳转到登录页
-  if (to.path !== '/login' && !token) {
-    next('/login')
-    return
-  }
+  // // 如果访问的是登录页面，且已有token，则跳转到首页
+  // if (to.path === '/login' && token) {
+  //   next('/home')
+  //   return
+  // }
+  //
+  // // 如果访问的不是登录页面，且没有token，则跳转到登录页
+  // if (to.path !== '/login' && !token) {
+  //   next('/login')
+  //   return
+  // }
   
   // 其他情况正常放行
   next()

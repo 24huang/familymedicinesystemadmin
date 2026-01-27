@@ -1,6 +1,4 @@
-const { defineConfig } = require('@vue/cli-service')
-
-module.exports = defineConfig({
+module.exports = {
   // 开发服务器配置
   devServer: {
     port: 3000, // 开发服务器端口
@@ -31,15 +29,6 @@ module.exports = defineConfig({
   // 生产环境是否生成 sourceMap 文件
   productionSourceMap: false,
   
-  // CSS 配置
-  css: {
-    loaderOptions: {
-      sass: {
-        additionalData: `@import "@/styles/variables.scss";`
-      }
-    }
-  },
-  
   // Webpack 配置
   configureWebpack: {
     resolve: {
@@ -57,4 +46,4 @@ module.exports = defineConfig({
       return args
     })
   }
-})
+}
