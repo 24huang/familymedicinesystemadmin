@@ -56,6 +56,17 @@ const routes = [
         component: () => import('@/views/medication/Records.vue')
       }
     ]
+  },
+  {
+    path: '/family',
+    component: Layout,
+    children: [
+      {
+        path: 'members',
+        name: 'FamilyMembers',
+        component: () => import('@/views/family/Members.vue')
+      }
+    ]
   }
 ]
 

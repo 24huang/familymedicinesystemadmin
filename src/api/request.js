@@ -3,7 +3,7 @@ import { Message } from 'element-ui'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: 'http://localhost:8080/api', // 后端接口地址
+  baseURL: 'http://localhost:8080', // 后端接口地址
   timeout: 10000 // 请求超时时间
 })
 
