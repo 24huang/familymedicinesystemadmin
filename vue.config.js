@@ -8,7 +8,7 @@ module.exports = {
         target: 'http://localhost:8080', // 后端API地址
         changeOrigin: true,
         pathRewrite: {
-          '^/api': '/api'
+          '^/api': ''
         }
       }
     }

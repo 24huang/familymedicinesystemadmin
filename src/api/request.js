@@ -3,7 +3,7 @@ import { Message } from 'element-ui'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: 'http://localhost:8080', // 后端接口地址
+  baseURL: '/api', // 使用代理路径
   timeout: 10000 // 请求超时时间
 })
 
@@ -26,6 +26,11 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   response => {
+    // 如果是 blob 类型的响应，直接返回
+    if (response.config.responseType === 'blob') {
+      return response.data
+    }
+
     const res = response.data
     
     // 如果返回的状态码不是200，说明接口出错了

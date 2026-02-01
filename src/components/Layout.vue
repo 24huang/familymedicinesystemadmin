@@ -3,8 +3,8 @@
     <!-- 侧边栏 -->
     <div class="sidebar" :class="{ collapsed: isCollapse }">
       <div class="logo">
-        <img src="../assets/logo.svg" alt="Logo" :style="{ width: isCollapse ? '32px' : '40px', height: 'auto' }">
         <span v-if="!isCollapse">家庭药品管理</span>
+        <span v-else>FMS</span>
       </div>
       
       <el-menu
@@ -20,44 +20,26 @@
           <i class="el-icon-s-home"></i>
           <span slot="title">首页</span>
         </el-menu-item>
-        
-        <el-submenu index="medicine">
-          <template slot="title">
-            <i class="el-icon-first-aid-kit"></i>
-            <span>药品管理</span>
-          </template>
-          <el-menu-item index="/medicine/list">药品列表</el-menu-item>
-          <el-menu-item index="/medicine/scan">药品录入</el-menu-item>
-          <el-menu-item index="/medicine/stock">库存管理</el-menu-item>
-        </el-submenu>
-        
-        <el-submenu index="medication">
+        <el-menu-item index="/drug">
+          <i class="el-icon-first-aid-kit"></i>
+          <span slot="title">药品管理</span>
+        </el-menu-item>
+        <el-menu-item index="/category">
+          <i class="el-icon-menu"></i>
+          <span slot="title">分类管理</span>
+        </el-menu-item>
+        <el-menu-item index="/member">
+          <i class="el-icon-user"></i>
+          <span slot="title">家庭成员</span>
+        </el-menu-item>
+        <el-submenu index="/medication">
           <template slot="title">
             <i class="el-icon-alarm-clock"></i>
-            <span>用药提醒</span>
+            <span slot="title">用药提醒管理</span>
           </template>
-          <el-menu-item index="/medication/calendar">提醒日历</el-menu-item>
-          <el-menu-item index="/medication/plans">用药计划</el-menu-item>
-          <el-menu-item index="/medication/records">用药记录</el-menu-item>
+          <el-menu-item index="/medication/plan">用药计划</el-menu-item>
+          <el-menu-item index="/medication/record">服药记录</el-menu-item>
         </el-submenu>
-        
-        <el-submenu index="family">
-          <template slot="title">
-            <i class="el-icon-user"></i>
-            <span>家庭成员</span>
-          </template>
-          <el-menu-item index="/family/members">成员管理</el-menu-item>
-        </el-submenu>
-        
-        <el-menu-item index="/health">
-          <i class="el-icon-document"></i>
-          <span slot="title">健康档案</span>
-        </el-menu-item>
-        
-        <el-menu-item index="/statistics">
-          <i class="el-icon-data-line"></i>
-          <span slot="title">统计分析</span>
-        </el-menu-item>
       </el-menu>
     </div>
     
@@ -73,30 +55,18 @@
           />
           <el-breadcrumb separator="/">
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item v-if="breadcrumbItems.length > 0">
-              {{ breadcrumbItems[breadcrumbItems.length - 1] }}
-            </el-breadcrumb-item>
           </el-breadcrumb>
         </div>
         
         <div class="header-right">
-          <!-- 通知 -->
-          <el-badge :value="notificationCount" class="notification-badge">
-            <el-button type="text" icon="el-icon-bell" @click="showNotifications" />
-          </el-badge>
-          
           <!-- 用户头像和下拉菜单 -->
           <el-dropdown @command="handleCommand">
             <div class="user-info">
-              <el-avatar :size="32" :src="userInfo.avatar">
-                {{ userInfo.nickname ? userInfo.nickname.charAt(0) : 'U' }}
-              </el-avatar>
-              <span class="username">{{ userInfo.nickname || '用户' }}</span>
+              <el-avatar :size="32" icon="el-icon-user-solid"></el-avatar>
+              <span class="username">{{ userInfo.nickname || '管理员' }}</span>
               <i class="el-icon-arrow-down"></i>
             </div>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="profile">个人资料</el-dropdown-item>
-              <el-dropdown-item command="settings">系统设置</el-dropdown-item>
               <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -112,7 +82,7 @@
 </template>
 
 <script>
-import { getCurrentUser, logout } from '@/api/auth'
+import { logout } from '@/api/auth'
 
 export default {
   name: 'Layout',
@@ -122,58 +92,39 @@ export default {
       userInfo: {
         nickname: '',
         avatar: ''
-      },
-      notificationCount: 0
+      }
     }
   },
   computed: {
     activeMenu() {
       return this.$route.path
-    },
-    breadcrumbItems() {
-      const path = this.$route.path
-      const breadcrumbs = {
-        '/medicine/list': '药品列表',
-        '/medicine/scan': '扫码录入',
-        '/medicine/stock': '库存管理',
-        '/medication/calendar': '提醒日历',
-        '/medication/plans': '用药计划',
-        '/medication/records': '用药记录',
-        '/family/members': '成员管理',
-        '/health': '健康档案',
-        '/statistics': '统计分析'
-      }
-      return breadcrumbs[path] ? [breadcrumbs[path]] : []
     }
   },
-  mounted() {
+  created() {
     this.getUserInfo()
   },
   methods: {
+    getUserInfo() {
+      const userInfoStr = localStorage.getItem('userInfo')
+      if (userInfoStr) {
+        try {
+          const userInfo = JSON.parse(userInfoStr)
+          this.userInfo = {
+            nickname: userInfo.nickname || userInfo.username || '管理员',
+            avatar: userInfo.avatar
+          }
+        } catch (e) {
+          console.error('解析用户信息失败', e)
+        }
+      }
+    },
     toggleSidebar() {
       this.isCollapse = !this.isCollapse
     },
     
-    async getUserInfo() {
-      try {
-        const response = await getCurrentUser()
-        this.userInfo = response.data
-      } catch (error) {
-        console.error('获取用户信息失败:', error)
-      }
-    },
-    
     handleCommand(command) {
-      switch (command) {
-        case 'profile':
-          this.$router.push('/profile')
-          break
-        case 'settings':
-          this.$router.push('/settings')
-          break
-        case 'logout':
-          this.handleLogout()
-          break
+      if (command === 'logout') {
+        this.handleLogout()
       }
     },
     
@@ -185,23 +136,25 @@ export default {
       }).then(() => {
         logout()
           .then(() => {
-            localStorage.removeItem('token')
             this.$message.success('退出登录成功')
-            this.$router.push('/login')
           })
           .catch(error => {
-            console.error('退出登录失败:', error)
-            // 即使退出失败也清除本地token
+            console.error('退出登录请求失败:', error)
+            // 即使后端请求失败，前端也要执行退出逻辑
+          })
+          .finally(() => {
+            // 清除所有用户信息
             localStorage.removeItem('token')
-            this.$router.push('/login')
+            localStorage.removeItem('userRole')
+            localStorage.removeItem('userId')
+            localStorage.removeItem('username')
+            localStorage.removeItem('userInfo')
+            
+            this.$router.replace('/login')
           })
       }).catch(() => {
         // 用户取消
       })
-    },
-    
-    showNotifications() {
-      this.$message.info('暂无新通知')
     }
   }
 }
@@ -233,12 +186,6 @@ export default {
   color: white;
   font-size: 16px;
   font-weight: bold;
-}
-
-.logo img {
-  width: 32px;
-  height: 32px;
-  margin-right: 10px;
 }
 
 .sidebar-menu {
@@ -276,10 +223,6 @@ export default {
   align-items: center;
 }
 
-.notification-badge {
-  margin-right: 20px;
-}
-
 .user-info {
   display: flex;
   align-items: center;
@@ -302,7 +245,7 @@ export default {
 .content {
   flex: 1;
   padding: 20px;
-  background-color: #f0f2f5;
   overflow-y: auto;
+  background-color: #f0f2f5;
 }
 </style>

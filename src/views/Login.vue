@@ -1,179 +1,91 @@
 <template>
   <div class="login-container">
-    <div class="login-box">
-      <div class="login-header">
-        <h2>家庭药品管理系统</h2>
-        <p>Family Medicine Management System</p>
-      </div>
-      
-      <el-form
-        ref="loginForm"
-        :model="loginForm"
-        :rules="loginRules"
-        class="login-form"
-        @submit.native.prevent="handleLogin"
-      >
-        <el-form-item prop="username">
-          <el-input
-            v-model="loginForm.username"
-            placeholder="请输入用户名"
-            prefix-icon="el-icon-user"
-            size="large"
-          />
-        </el-form-item>
-        
-        <el-form-item prop="password">
-          <el-input
-            v-model="loginForm.password"
-            type="password"
-            placeholder="请输入密码"
-            prefix-icon="el-icon-lock"
-            size="large"
-            show-password
-            @keyup.enter.native="handleLogin"
-          />
-        </el-form-item>
-        
-        <el-form-item>
-          <el-button
-            type="primary"
-            size="large"
-            :loading="loading"
-            class="login-button"
-            @click="handleLogin"
-          >
-            {{ loading ? '登录中...' : '登录' }}
-          </el-button>
-        </el-form-item>
-        
-        <div class="login-footer">
-          <span>还没有账号？</span>
-          <el-link type="primary" @click="showRegister = true">立即注册</el-link>
+    <div class="login-content">
+      <div class="login-left">
+        <div class="login-info">
+          <i class="el-icon-first-aid-kit logo-icon"></i>
+          <h1>家庭药品管理系统</h1>
+          <p class="subtitle">Family Medicine Management System</p>
+          <ul class="features">
+            <li><i class="el-icon-check"></i> 智能药品库存管理</li>
+            <li><i class="el-icon-check"></i> 科学用药提醒服务</li>
+            <li><i class="el-icon-check"></i> 家庭成员健康档案</li>
+          </ul>
         </div>
-      </el-form>
-    </div>
-
-    <!-- 注册对话框 -->
-    <el-dialog
-      title="用户注册"
-      :visible.sync="showRegister"
-      width="400px"
-      center
-    >
-      <el-form
-        ref="registerForm"
-        :model="registerForm"
-        :rules="registerRules"
-        label-width="80px"
-      >
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="registerForm.username" placeholder="请输入用户名" />
-        </el-form-item>
-        
-        <el-form-item label="密码" prop="password">
-          <el-input
-            v-model="registerForm.password"
-            type="password"
-            placeholder="请输入密码"
-            show-password
-          />
-        </el-form-item>
-        
-        <el-form-item label="确认密码" prop="confirmPassword">
-          <el-input
-            v-model="registerForm.confirmPassword"
-            type="password"
-            placeholder="请确认密码"
-            show-password
-          />
-        </el-form-item>
-        
-        <el-form-item label="昵称" prop="nickname">
-          <el-input v-model="registerForm.nickname" placeholder="请输入昵称" />
-        </el-form-item>
-        
-        <el-form-item label="手机号" prop="phone">
-          <el-input v-model="registerForm.phone" placeholder="请输入手机号" />
-        </el-form-item>
-        
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="registerForm.email" placeholder="请输入邮箱" />
-        </el-form-item>
-      </el-form>
-      
-      <div slot="footer">
-        <el-button @click="showRegister = false">取消</el-button>
-        <el-button type="primary" :loading="registerLoading" @click="handleRegister">
-          {{ registerLoading ? '注册中...' : '注册' }}
-        </el-button>
+        <div class="login-bg-decoration"></div>
       </div>
-    </el-dialog>
+      
+      <div class="login-right">
+        <div class="login-form-box">
+          <h2>管理员登录</h2>
+          <p class="login-tip">欢迎回来，请登录您的账户</p>
+          
+          <el-form
+            ref="loginForm"
+            :model="loginForm"
+            :rules="loginRules"
+            class="login-form"
+            @submit.native.prevent="handleLogin"
+          >
+            <el-form-item prop="username">
+              <el-input
+                v-model="loginForm.username"
+                placeholder="请输入管理员账号"
+                prefix-icon="el-icon-user"
+              >
+              </el-input>
+            </el-form-item>
+            
+            <el-form-item prop="password">
+              <el-input
+                v-model="loginForm.password"
+                type="password"
+                placeholder="请输入密码"
+                prefix-icon="el-icon-lock"
+                show-password
+                @keyup.enter.native="handleLogin"
+              >
+              </el-input>
+            </el-form-item>
+            
+            <el-form-item>
+              <el-button
+                type="primary"
+                :loading="loading"
+                class="login-button"
+                @click="handleLogin"
+              >
+                {{ loading ? '登录中...' : '立即登录' }}
+              </el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { login, register } from '@/api/auth'
+import { adminLogin, getCurrentUser } from '@/api/auth'
 
 export default {
   name: 'Login',
   data() {
-    // 密码验证规则
-    const validateConfirmPassword = (rule, value, callback) => {
-      if (value !== this.registerForm.password) {
-        callback(new Error('两次输入密码不一致'))
-      } else {
-        callback()
-      }
-    }
-    
     return {
       loginForm: {
         username: '',
         password: ''
       },
-      registerForm: {
-        username: '',
-        password: '',
-        confirmPassword: '',
-        nickname: '',
-        phone: '',
-        email: ''
-      },
       loginRules: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
+          { required: true, message: '请输入管理员账号', trigger: 'blur' }
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 6, message: '密码长度不能少于6位', trigger: 'blur' }
+          { min: 5, message: '密码长度不能少于5位', trigger: 'blur' }
         ]
       },
-      registerRules: {
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, max: 20, message: '用户名长度在3到20个字符', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 6, message: '密码长度不能少于6位', trigger: 'blur' }
-        ],
-        confirmPassword: [
-          { required: true, message: '请确认密码', trigger: 'blur' },
-          { validator: validateConfirmPassword, trigger: 'blur' }
-        ],
-        nickname: [
-          { required: true, message: '请输入昵称', trigger: 'blur' }
-        ],
-        phone: [
-          { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
-        ],
-        email: [
-          { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }
-        ]
-      },
-      loading: false,
-      registerLoading: false,
-      showRegister: false
+      loading: false
     }
   },
   methods: {
@@ -181,56 +93,37 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          login(this.loginForm)
+          
+          adminLogin(this.loginForm)
             .then(response => {
-              // 保存token
-              localStorage.setItem('token', response.data)
-              this.$message.success('登录成功')
-              // 跳转到首页
-              this.$router.push('/home')
+              const token = response.data
+              localStorage.setItem('token', token)
+              // 明确标识为管理员角色
+              localStorage.setItem('userRole', 'ADMIN') 
+              
+              // 获取用户信息并存储
+              return getCurrentUser().then(userRes => {
+                const user = userRes.data
+                localStorage.setItem('userId', user.userId)
+                localStorage.setItem('username', user.username)
+                localStorage.setItem('userInfo', JSON.stringify(user))
+              })
+            })
+            .then(() => {
+              this.$message.success({
+                message: '登录成功',
+                duration: 1500,
+                onClose: () => {
+                  this.$router.replace('/home')
+                }
+              })
             })
             .catch(error => {
               console.error('登录失败:', error)
-              const errorMessage = error.response?.data?.message || error.message || '登录失败，请检查用户名和密码'
-              this.$message.error(errorMessage)
+              this.$message.error('登录失败，请检查用户名和密码')
             })
             .finally(() => {
               this.loading = false
-            })
-        }
-      })
-    },
-    
-    handleRegister() {
-      this.$refs.registerForm.validate(valid => {
-        if (valid) {
-          this.registerLoading = true
-          const registerData = {
-            username: this.registerForm.username,
-            password: this.registerForm.password,
-            nickname: this.registerForm.nickname,
-            phone: this.registerForm.phone,
-            email: this.registerForm.email
-          }
-          register(registerData)
-            .then(() => {
-              this.$message.success('注册成功，请登录')
-              this.showRegister = false
-              // 清空注册表单
-              this.registerForm = {
-                username: '',
-                password: '',
-                confirmPassword: '',
-                nickname: '',
-                phone: '',
-                email: ''
-              }
-            })
-            .catch(error => {
-              console.error('注册失败:', error)
-            })
-            .finally(() => {
-              this.registerLoading = false
             })
         }
       })
@@ -242,57 +135,132 @@ export default {
 <style scoped>
 .login-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #f0f2f5;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23409eff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
-.login-box {
+.login-content {
+  display: flex;
+  width: 900px;
+  height: 520px;
   background: white;
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  padding: 40px;
-  width: 100%;
-  max-width: 400px;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
-.login-header {
-  text-align: center;
-  margin-bottom: 30px;
+.login-left {
+  flex: 1;
+  background: linear-gradient(135deg, #409EFF 0%, #36d1dc 100%);
+  padding: 60px 40px;
+  color: white;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.login-header h2 {
-  color: #333;
-  margin-bottom: 10px;
-  font-size: 24px;
+.login-bg-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23fff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+  opacity: 0.8;
 }
 
-.login-header p {
-  color: #666;
+.login-info {
+  position: relative;
+  z-index: 1;
+}
+
+.logo-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.login-left h1 {
+  font-size: 32px;
+  margin: 0 0 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.subtitle {
   font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 40px;
+}
+
+.features {
+  list-style: none;
+  padding: 0;
   margin: 0;
 }
 
-.login-form {
-  margin-top: 20px;
+.features li {
+  margin: 15px 0;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  opacity: 0.9;
+}
+
+.features li i {
+  margin-right: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  padding: 4px;
+  font-size: 12px;
+}
+
+.login-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+}
+
+.login-form-box {
+  width: 320px;
+  padding: 0 20px;
+}
+
+.login-form-box h2 {
+  font-size: 24px;
+  color: #303133;
+  margin: 0 0 10px;
+  text-align: center;
+}
+
+.login-tip {
+  color: #909399;
+  font-size: 14px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.login-form .el-input__inner {
+  height: 45px;
+  line-height: 45px;
 }
 
 .login-button {
   width: 100%;
   height: 45px;
   font-size: 16px;
-}
-
-.login-footer {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 14px;
-  color: #666;
-}
-
-.login-footer .el-link {
-  margin-left: 5px;
+  border-radius: 4px;
+  margin-top: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
 }
 </style>

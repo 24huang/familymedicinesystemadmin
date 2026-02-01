@@ -26,45 +26,63 @@ const routes = [
     ]
   },
   {
-    path: '/medicine',
+    path: '/drug',
     component: Layout,
     children: [
       {
-        path: 'list',
-        name: 'MedicineList',
-        component: () => import('@/views/medicine/MedicineList.vue')
+        path: '',
+        name: 'DrugList',
+        component: () => import('@/views/drug/index.vue'),
+        meta: { title: '药品管理' }
+      }
+    ]
+  },
+  {
+    path: '/category',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'CategoryList',
+        component: () => import('@/views/category/index.vue'),
+        meta: { title: '药品分类管理' }
+      }
+    ]
+  },
+  {
+    path: '/member',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'MemberList',
+        component: () => import('@/views/member/index.vue'),
+        meta: { title: '家庭成员管理' }
       },
       {
-        path: 'scan',
-        name: 'ScanMedicine',
-        component: () => import('@/views/medicine/ScanMedicine.vue')
+        path: 'archive',
+        name: 'MemberArchive',
+        component: () => import('@/views/archive/index.vue'),
+        meta: { title: '健康档案详情', hidden: true }
       }
     ]
   },
   {
     path: '/medication',
     component: Layout,
+    meta: { title: '用药提醒管理', icon: 'el-icon-alarm-clock' },
     children: [
       {
-        path: 'calendar',
-        name: 'Calendar',
-        component: () => import('@/views/medication/Calendar.vue')
+        path: 'plan',
+        name: 'MedicationPlan',
+        component: () => import('../views/medication/plan/index.vue'),
+        meta: { title: '用药计划' }
       },
       {
-        path: 'records',
-        name: 'Records',
-        component: () => import('@/views/medication/Records.vue')
-      }
-    ]
-  },
-  {
-    path: '/family',
-    component: Layout,
-    children: [
-      {
-        path: 'members',
-        name: 'FamilyMembers',
-        component: () => import('@/views/family/Members.vue')
+        path: 'record',
+        name: 'MedicationRecord',
+        component: () => import('../views/medication/record/index.vue'),
+        meta: { title: '服药记录' }
       }
     ]
   }
@@ -79,19 +97,19 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   
-  // // 如果访问的是登录页面，且已有token，则跳转到首页
-  // if (to.path === '/login' && token) {
-  //   next('/home')
-  //   return
-  // }
-  //
-  // // 如果访问的不是登录页面，且没有token，则跳转到登录页
-  // if (to.path !== '/login' && !token) {
-  //   next('/login')
-  //   return
-  // }
+  // 如果访问的是登录页面，且已有token，则跳转到首页
+  if (to.path === '/login' && token) {
+    next('/home')
+    return
+  }
+
+  // 如果访问的不是登录页面，且没有token，则跳转到登录页
+  if (to.path !== '/login' && !token) {
+    next('/login')
+    return
+  }
   
-  // 其他情况正常放行
+  //其他情况正常放行
   next()
 })
 
