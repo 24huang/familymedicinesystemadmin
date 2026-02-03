@@ -142,7 +142,7 @@
 </template>
 
 <script>
-import { getDrugDetail, addDrug, updateDrug, scanDrug, uploadFile } from '@/api/drug'
+import { getDrugDetail, addDrug, updateDrug,  uploadFile } from '@/api/drug'
 import { getCategoryOptions } from '@/api/category'
 
 export default {

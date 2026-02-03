@@ -32,12 +32,18 @@
       
       <el-descriptions :column="2" border>
         <el-descriptions-item label="条形码">{{ drug.barCode || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="剂型">{{ drug.form || '-' }}</el-descriptions-item>
         <el-descriptions-item label="规格">{{ drug.spec || '-' }}</el-descriptions-item>
-        <el-descriptions-item label="包装">{{ drug.package || '-' }}</el-descriptions-item>
-        <el-descriptions-item label="有效期">{{ drug.validity || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="保质期">{{ drug.shelfLife ? drug.shelfLife + '个月' : '-' }}</el-descriptions-item>
         <el-descriptions-item label="生产厂家">{{ drug.manufacturer || '-' }}</el-descriptions-item>
         <el-descriptions-item label="批准文号">{{ drug.approvalNumber || '-' }}</el-descriptions-item>
         <el-descriptions-item label="当前库存">{{ drug.stock }}</el-descriptions-item>
+        <el-descriptions-item label="用法">{{ drug.usageType === 0 ? '内服' : (drug.usageType === 1 ? '外用' : '-') }}</el-descriptions-item>
+        <el-descriptions-item label="主要成分" :span="2">{{ drug.mainIngredient || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="说明书" :span="2">
+          <a v-if="drug.instructionUrl" :href="drug.instructionUrl" target="_blank" style="color: #409EFF">查看说明书</a>
+          <span v-else>暂无</span>
+        </el-descriptions-item>
         <el-descriptions-item label="更新时间">{{ drug.updateTime || '-' }}</el-descriptions-item>
       </el-descriptions>
 
