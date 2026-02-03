@@ -3,15 +3,15 @@
     <!-- 侧边栏 -->
     <div class="sidebar" :class="{ collapsed: isCollapse }">
       <div class="logo">
-        <span v-if="!isCollapse">家庭药品管理</span>
-        <span v-else>FMS</span>
+        <img src="@/assets/logo.svg" alt="logo" class="logo-img">
+        <span v-if="!isCollapse" class="logo-text">家庭药品管理</span>
       </div>
       
       <el-menu
         :default-active="activeMenu"
         class="sidebar-menu"
         :collapse="isCollapse"
-        background-color="#304156"
+        background-color="#2b3b4e"
         text-color="#bfcbd9"
         active-text-color="#409EFF"
         router
@@ -167,10 +167,12 @@ export default {
 }
 
 .sidebar {
-  width: 220px;
-  background-color: #304156;
+  width: 240px;
+  background-color: #2b3b4e;
+  box-shadow: 2px 0 6px rgba(0,21,41,.35);
   transition: width 0.3s;
   overflow: hidden;
+  z-index: 1001;
 }
 
 .sidebar.collapsed {
@@ -178,14 +180,36 @@ export default {
 }
 
 .logo {
-  height: 60px;
+  height: 64px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background-color: #2b2f3a;
+  padding-left: 20px;
+  background-color: #263445;
   color: white;
-  font-size: 16px;
-  font-weight: bold;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.sidebar.collapsed .logo {
+  padding-left: 0;
+  justify-content: center;
+}
+
+.logo-img {
+  width: 32px;
+  height: 32px;
+  margin-right: 12px;
+}
+
+.sidebar.collapsed .logo-img {
+  margin-right: 0;
+}
+
+.logo-text {
+  font-size: 18px;
+  font-weight: 600;
+  white-space: nowrap;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
 }
 
 .sidebar-menu {

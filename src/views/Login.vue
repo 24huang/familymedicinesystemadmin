@@ -3,7 +3,7 @@
     <div class="login-content">
       <div class="login-left">
         <div class="login-info">
-          <i class="el-icon-first-aid-kit logo-icon"></i>
+          <img src="@/assets/logo.svg" class="logo-img" alt="logo">
           <h1>家庭药品管理系统</h1>
           <p class="subtitle">Family Medicine Management System</p>
           <ul class="features">
@@ -179,8 +179,9 @@ export default {
   z-index: 1;
 }
 
-.logo-icon {
-  font-size: 48px;
+.logo-img {
+  width: 72px;
+  height: 72px;
   margin-bottom: 20px;
   background: rgba(255, 255, 255, 0.2);
   padding: 12px;
