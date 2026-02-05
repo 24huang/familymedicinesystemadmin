@@ -2,17 +2,16 @@ import request from './request'
 
 // 分页查询药品列表
 export function getDrugPage(params) {
+  const { current, page, pageSize, size, ...rest } = params || {}
+  const query = {
+    page: page != null ? page : (current != null ? current : 1),
+    size: size != null ? size : (pageSize != null ? pageSize : 10),
+    ...rest
+  }
   return request({
-    url: '/admin/drug/list',
-    method: 'post',
-    data: {
-      page: params.page,
-      size: params.pageSize,
-      keyword: params.keyword,
-      categoryId: params.categoryId,
-      categoryType: params.categoryType,
-      status: params.status
-    }
+    url: '/admin/drug/page',
+    method: 'get',
+    params: query
   })
 }
 
@@ -59,10 +58,18 @@ export function auditDrug(id, status) {
   })
 }
 
-// 扫码获取药品信息
-export function scanDrug(code) {
+// // 扫码获取药品信息
+// export function scanDrug(code) {
+//   return request({
+//     url: `/admin/drug/scan/${code}`,
+//     method: 'get'
+//   })
+// }
+
+// 获取药品分类选项
+export function getDrugCategoryOptions() {
   return request({
-    url: `/admin/drug/scan/${code}`,
+    url: '/admin/drug/category/options',
     method: 'get'
   })
 }

@@ -5,6 +5,9 @@
         <span><i class="el-icon-search"></i> 筛选查询</span>
       </div>
       <el-form :inline="true" :model="queryParams" size="small">
+        <el-form-item label="户主ID">
+          <el-input v-model="queryParams.householdId" placeholder="请输入户主ID" clearable @keyup.enter.native="handleQuery" />
+        </el-form-item>
         <el-form-item label="家庭成员">
           <el-select v-model="queryParams.memberId" placeholder="请选择成员" clearable filterable>
             <el-option
@@ -84,6 +87,13 @@
               icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
             >修改</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-delete"
+              class="text-danger"
+              @click="handleDelete(scope.row)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -106,7 +116,7 @@
 </template>
 
 <script>
-import { getPlanPage } from '@/api/medication'
+import { getPlanPage, deletePlan } from '@/api/medication'
 import { getMemberPage } from '@/api/member'
 import PlanDialog from './components/PlanDialog'
 
@@ -122,6 +132,7 @@ export default {
       queryParams: {
         current: 1,
         size: 10,
+        householdId: undefined,
         memberId: undefined,
         drugName: ''
       }
@@ -157,6 +168,7 @@ export default {
       this.getList()
     },
     resetQuery() {
+      this.queryParams.householdId = undefined
       this.queryParams.memberId = undefined
       this.queryParams.drugName = ''
       this.handleQuery()
@@ -166,6 +178,18 @@ export default {
     },
     handleUpdate(row) {
       this.$refs.planDialog.open('编辑用药计划', row)
+    },
+    handleDelete(row) {
+      this.$confirm('确认删除该用药计划?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return deletePlan(row.planId)
+      }).then(() => {
+        this.$message.success('删除成功')
+        this.getList()
+      }).catch(() => {})
     },
     handleSizeChange(val) {
       this.queryParams.size = val
@@ -199,5 +223,8 @@ export default {
 .pagination-container {
   margin-top: 20px;
   text-align: right;
+}
+.text-danger {
+  color: #F56C6C;
 }
 </style>

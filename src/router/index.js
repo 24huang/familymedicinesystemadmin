@@ -12,7 +12,7 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/login'
   },
   {
     path: '/home',
@@ -85,6 +85,30 @@ const routes = [
         meta: { title: '服药记录' }
       }
     ]
+  },
+  {
+    path: '/notification',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'NotificationList',
+        component: () => import('@/views/notification/index.vue'),
+        meta: { title: '消息通知管理', icon: 'el-icon-bell' }
+      }
+    ]
+  },
+  {
+    path: '/user',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'UserList',
+        component: () => import('@/views/user/index.vue'),
+        meta: { title: '系统用户管理', icon: 'el-icon-user', roles: [0] }
+      }
+    ]
   }
 ]
 
@@ -109,6 +133,30 @@ router.beforeEach((to, from, next) => {
     return
   }
   
+  // 权限验证
+  if (to.meta.roles) {
+    const userInfoStr = localStorage.getItem('userInfo')
+    if (userInfoStr) {
+      try {
+        const userInfo = JSON.parse(userInfoStr)
+        const userRole = userInfo.role
+        // 检查用户角色是否在允许的角色列表中
+        if (!to.meta.roles.includes(userRole)) {
+          // 无权限，跳转到首页
+          next('/home')
+          return
+        }
+      } catch (e) {
+        console.error('解析用户信息失败', e)
+        next('/login')
+        return
+      }
+    } else {
+      next('/login')
+      return
+    }
+  }
+
   //其他情况正常放行
   next()
 })

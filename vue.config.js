@@ -10,6 +10,19 @@ module.exports = {
         pathRewrite: {
           '^/api': ''
         }
+      },
+      // 代理静态资源
+      '/profile': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      },
+      '/files': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      },
+      '/common': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
       }
     }
   },

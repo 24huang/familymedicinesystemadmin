@@ -5,6 +5,9 @@
         <span><i class="el-icon-search"></i> 筛选查询</span>
       </div>
       <el-form :inline="true" :model="queryParams" size="small">
+        <el-form-item label="户主ID">
+          <el-input v-model="queryParams.householdId" placeholder="请输入户主ID" clearable @keyup.enter.native="handleQuery" />
+        </el-form-item>
         <el-form-item label="家庭成员">
           <el-select v-model="queryParams.memberId" placeholder="请选择成员" clearable filterable>
             <el-option
@@ -89,6 +92,7 @@ export default {
       queryParams: {
         current: 1,
         size: 10,
+        householdId: undefined,
         memberId: undefined,
         date: undefined
       }
@@ -120,6 +124,7 @@ export default {
       this.getList()
     },
     resetQuery() {
+      this.queryParams.householdId = undefined
       this.queryParams.memberId = undefined
       this.queryParams.date = undefined
       this.handleQuery()

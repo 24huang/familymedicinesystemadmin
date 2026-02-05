@@ -8,6 +8,22 @@
   >
     <el-form ref="form" :model="form" :rules="rules" label-width="100px" size="small">
       <el-row>
+        <el-col :span="24" style="text-align: center">
+          <el-upload
+            class="avatar-uploader"
+            action="/api/common/upload"
+            :show-file-list="false"
+            :headers="uploadHeaders"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload">
+            <img v-if="form.picture" :src="form.picture" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2MB</div>
+          </el-upload>
+        </el-col>
+      </el-row>
+
+      <el-row>
         <el-col :span="12">
           <el-form-item label="姓名" prop="name">
             <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
@@ -78,6 +94,7 @@ export default {
       title: '',
       visible: false,
       loading: false,
+      uploadHeaders: { Authorization: 'Bearer ' + localStorage.getItem('token') },
       form: {
         memberId: undefined,
         householdId: undefined,
@@ -86,7 +103,8 @@ export default {
         gender: 1,
         birthDate: '',
         phone: '',
-        healthCondition: ''
+        healthCondition: '',
+        picture: ''
       },
       rules: {
         householdId: [
@@ -116,9 +134,29 @@ export default {
           gender: 1,
           birthDate: '',
           phone: '',
-          healthCondition: ''
+          healthCondition: '',
+          picture: ''
         }
       }
+    },
+    handleAvatarSuccess(res) {
+      if (res.code === 200) {
+        this.form.picture = res.data
+      } else {
+        this.$message.error(res.message || '上传图片失败')
+      }
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
     },
     submitForm() {
       this.$refs.form.validate(valid => {
@@ -148,5 +186,29 @@ export default {
   font-size: 12px;
   color: #909399;
   margin-left: 10px;
+}
+
+::v-deep .avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+::v-deep .avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+}
+.avatar {
+  width: 100px;
+  height: 100px;
+  display: block;
 }
 </style>

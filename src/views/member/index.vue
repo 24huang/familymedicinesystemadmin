@@ -29,6 +29,18 @@
         <el-table-column label="ID" prop="memberId" width="80" align="center"></el-table-column>
         <el-table-column label="户主ID" prop="householdId" width="100" align="center"></el-table-column>
         <el-table-column label="姓名" prop="name" width="120" align="center"></el-table-column>
+        <el-table-column label="照片" width="100" align="center">
+          <template slot-scope="scope">
+            <el-image
+              style="width: 50px; height: 50px; border-radius: 50%"
+              :src="scope.row.picture"
+              :preview-src-list="scope.row.picture ? [scope.row.picture] : []">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-user-solid" style="font-size: 20px; line-height: 50px; color: #C0C4CC; background: #f5f7fa; width: 100%; height: 100%; display: block;"></i>
+              </div>
+            </el-image>
+          </template>
+        </el-table-column>
         <el-table-column label="性别" prop="gender" width="80" align="center">
           <template slot-scope="scope">
             <el-tag :type="scope.row.gender === 1 ? 'primary' : 'danger'" size="small">

@@ -27,6 +27,14 @@ export function updatePlan(data) {
   })
 }
 
+// 删除用药计划
+export function deletePlan(id) {
+  return request({
+    url: `${id}`,
+    method: 'delete'
+  })
+}
+
 // 分页查询服药记录
 export function getRecordPage(params) {
   return request({

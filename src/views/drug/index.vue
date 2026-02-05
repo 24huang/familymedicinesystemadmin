@@ -114,9 +114,9 @@
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="queryParams.page"
+          :current-page="queryParams.current"
           :page-sizes="[10, 20, 30, 50]"
-          :page-size="queryParams.pageSize"
+          :page-size="queryParams.size"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
         >
@@ -138,8 +138,7 @@
 </template>
 
 <script>
-import { getDrugPage, deleteDrug, auditDrug } from '@/api/drug'
-import { getCategoryOptions } from '@/api/category'
+import { getDrugPage, deleteDrug, auditDrug, getDrugCategoryOptions } from '@/api/drug'
 import DrugDialog from './components/DrugDialog.vue'
 import DrugDetailDialog from './components/DrugDetailDialog.vue'
 
@@ -158,7 +157,7 @@ export default {
       multipleSelection: [],
       queryParams: {
         page: 1,
-        pageSize: 10,
+        size: 10,
         keyword: '',
         categoryId: undefined,
         categoryType: undefined,
@@ -172,7 +171,7 @@ export default {
   },
   methods: {
     getCategoryList() {
-      getCategoryOptions().then(res => {
+      getDrugCategoryOptions().then(res => {
         this.categoryOptions = res.data || []
       })
     },
@@ -187,13 +186,13 @@ export default {
       })
     },
     handleQuery() {
-      this.queryParams.page = 1
+      this.queryParams.current = 1
       this.getList()
     },
     resetQuery() {
       this.queryParams = {
-        page: 1,
-        pageSize: 10,
+        current: 1,
+        size: 10,
         keyword: '',
         categoryId: undefined,
         categoryType: undefined,
@@ -205,11 +204,11 @@ export default {
       this.multipleSelection = val
     },
     handleSizeChange(val) {
-      this.queryParams.pageSize = val
+      this.queryParams.size = val
       this.getList()
     },
     handleCurrentChange(val) {
-      this.queryParams.page = val
+      this.queryParams.current = val
       this.getList()
     },
     getStatusType(status) {

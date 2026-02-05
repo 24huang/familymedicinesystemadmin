@@ -3,7 +3,7 @@
     <!-- Welcome Section -->
     <div class="welcome-section">
       <div class="welcome-text">
-        <h2>午安，管理员</h2>
+        <h2>{{timePeriod}}，管理员</h2>
         <p>祝您今天心情愉快，家庭健康！</p>
       </div>
       <img src="@/assets/logo.svg" class="welcome-img" />
@@ -67,7 +67,7 @@
             </el-table-column>
             <el-table-column prop="stock" label="库存"></el-table-column>
             <el-table-column prop="status" label="状态">
-               <template slot-scope="scope">
+               <template>
                  <span style="color: #F56C6C">即将过期</span>
                </template>
             </el-table-column>
@@ -130,7 +130,28 @@ export default {
         { content: '奶奶 - 服用 钙片', timestamp: '08:30', type: 'success', icon: 'el-icon-check', color: '#0bbd87' },
         { content: '爸爸 - 服用 维生素', timestamp: '09:00', type: 'warning', icon: 'el-icon-more' },
         { content: '爷爷 - 服用 降压药 (晚)', timestamp: '20:00', color: '#909399' }
-      ]
+      ],
+      timePeriod: "" //存储当前时间段
+    }
+  },
+  mounted() {
+    // 页面加载完成后，执行时段判断
+    this.judgeTimePeriod()
+  },
+  methods: {
+    // 核心方法：获取当前时间并判断时段
+    judgeTimePeriod() {
+      const now = new Date() // 获取当前时间对象
+      const hours = now.getHours() // 提取当前小时数（0-23）
+
+      // 按规则判断时段，赋值给响应式数据
+      if (hours >= 6 && hours < 12) {
+        this.timePeriod = '早上'
+      } else if (hours >= 12 && hours < 18) {
+        this.timePeriod = '下午'
+      } else {
+        this.timePeriod = '晚上'
+      }
     }
   }
 }

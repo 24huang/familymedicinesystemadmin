@@ -40,6 +40,14 @@
           <el-menu-item index="/medication/plan">用药计划</el-menu-item>
           <el-menu-item index="/medication/record">服药记录</el-menu-item>
         </el-submenu>
+        <el-menu-item index="/notification">
+          <i class="el-icon-bell"></i>
+          <span slot="title">消息通知</span>
+        </el-menu-item>
+        <el-menu-item index="/user" v-if="isAdmin">
+          <i class="el-icon-s-custom"></i>
+          <span slot="title">用户管理</span>
+        </el-menu-item>
       </el-menu>
     </div>
     
@@ -92,12 +100,16 @@ export default {
       userInfo: {
         nickname: '',
         avatar: ''
-      }
+      },
+      userRole: null
     }
   },
   computed: {
     activeMenu() {
       return this.$route.path
+    },
+    isAdmin() {
+      return this.userRole === 0
     }
   },
   created() {
@@ -113,6 +125,7 @@ export default {
             nickname: userInfo.nickname || userInfo.username || '管理员',
             avatar: userInfo.avatar
           }
+          this.userRole = userInfo.role
         } catch (e) {
           console.error('解析用户信息失败', e)
         }

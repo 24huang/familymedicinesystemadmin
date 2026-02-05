@@ -2,10 +2,16 @@ import request from './request'
 
 // 分页查询家庭成员
 export function getMemberPage(params) {
+  const { current, page, size, ...rest } = params || {}
+  const query = {
+    page: page != null ? page : (current != null ? current : 1),
+    size: size != null ? size : 10,
+    ...rest
+  }
   return request({
     url: '/admin/member/page',
     method: 'get',
-    params
+    params: query
   })
 }
 
