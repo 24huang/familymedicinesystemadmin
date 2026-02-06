@@ -6,7 +6,7 @@
       </div>
       
       <el-table v-loading="loading" :data="tableData" border style="width: 100%">
-        <el-table-column prop="id" label="ID" width="80" align="center" />
+        <el-table-column prop="notificationId" label="ID" width="80" align="center" />
         <el-table-column prop="title" label="标题" width="200" align="center" />
         <el-table-column prop="content" label="内容" min-width="300" align="center" :show-overflow-tooltip="true" />
         <el-table-column prop="createTime" label="发送时间" width="180" align="center" />

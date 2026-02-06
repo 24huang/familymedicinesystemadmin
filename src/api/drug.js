@@ -6,6 +6,7 @@ export function getDrugPage(params) {
   const query = {
     page: page != null ? page : (current != null ? current : 1),
     size: size != null ? size : (pageSize != null ? pageSize : 10),
+
     ...rest
   }
   return request({
@@ -58,13 +59,6 @@ export function auditDrug(id, status) {
   })
 }
 
-// // 扫码获取药品信息
-// export function scanDrug(code) {
-//   return request({
-//     url: `/admin/drug/scan/${code}`,
-//     method: 'get'
-//   })
-// }
 
 // 获取药品分类选项
 export function getDrugCategoryOptions() {

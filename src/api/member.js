@@ -4,7 +4,7 @@ import request from './request'
 export function getMemberPage(params) {
   const { current, page, size, ...rest } = params || {}
   const query = {
-    page: page != null ? page : (current != null ? current : 1),
+    current: current != null ? current : (page != null ? page : 1),
     size: size != null ? size : 10,
     ...rest
   }

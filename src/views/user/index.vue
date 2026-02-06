@@ -7,10 +7,9 @@
       </div>
       
       <el-table v-loading="loading" :data="tableData" border style="width: 100%">
-        <el-table-column prop="id" label="ID" width="80" align="center" />
+        <el-table-column prop="userId" label="ID" width="80" align="center" />
         <el-table-column prop="username" label="用户名" width="150" align="center" />
         <el-table-column prop="nickname" label="昵称" width="150" align="center" />
-        <el-table-column prop="email" label="邮箱" min-width="180" align="center" />
         <el-table-column prop="phone" label="手机号" width="150" align="center" />
         <el-table-column prop="createTime" label="创建时间" width="180" align="center" />
         <el-table-column label="操作" width="180" align="center" fixed="right">

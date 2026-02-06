@@ -12,9 +12,9 @@
           <el-select v-model="queryParams.categoryId" placeholder="请选择分类" clearable style="width: 150px;">
             <el-option
               v-for="item in categoryOptions"
-              :key="item.id"
+              :key="item.categoryId"
               :label="item.name"
-              :value="item.id"
+              :value="item.categoryId"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -186,19 +186,19 @@ export default {
       })
     },
     handleQuery() {
-      this.queryParams.current = 1
+      this.queryParams.page = 1
       this.getList()
     },
     resetQuery() {
       this.queryParams = {
-        current: 1,
+        page: 1,
         size: 10,
         keyword: '',
         categoryId: undefined,
         categoryType: undefined,
         status: undefined
       }
-      this.handleQuery()
+      this.getList()
     },
     handleSelectionChange(val) {
       this.multipleSelection = val

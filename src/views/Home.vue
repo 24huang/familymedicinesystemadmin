@@ -67,8 +67,8 @@
             </el-table-column>
             <el-table-column prop="stock" label="库存"></el-table-column>
             <el-table-column prop="status" label="状态">
-               <template>
-                 <span style="color: #F56C6C">即将过期</span>
+               <template slot-scope="scope">
+                 <span :style="{ color: scope.row.status === '已过期' ? '#F56C6C' : '#E6A23C' }">{{ scope.row.status }}</span>
                </template>
             </el-table-column>
           </el-table>
@@ -109,36 +109,88 @@
 </template>
 
 <script>
+import { getDashboardStats } from '@/api/dashboard'
+
 export default {
   name: 'Home',
   data() {
     return {
       statCards: [
-        { label: '库存药品', value: '128', icon: 'el-icon-box', color: '#409EFF' },
-        { label: '家庭成员', value: '4', icon: 'el-icon-user', color: '#67C23A' },
-        { label: '今日计划', value: '12', icon: 'el-icon-time', color: '#E6A23C' },
-        { label: '缺货/过期', value: '3', icon: 'el-icon-warning', color: '#F56C6C' }
+        { label: '库存药品', value: '-', icon: 'el-icon-box', color: '#409EFF' },
+        { label: '家庭成员', value: '-', icon: 'el-icon-user', color: '#67C23A' },
+        { label: '今日计划', value: '-', icon: 'el-icon-time', color: '#E6A23C' },
+        { label: '缺货/过期', value: '-', icon: 'el-icon-warning', color: '#F56C6C' }
       ],
-      expiringDrugs: [
-        { name: '阿莫西林胶囊', expireDate: '2023-12-01', stock: '2盒' },
-        { name: '布洛芬缓释胶囊', expireDate: '2023-11-20', stock: '1瓶' },
-        { name: '维生素C片', expireDate: '2023-12-15', stock: '3瓶' }
-      ],
-      dailyTip: '每天喝足够的水（约8杯）有助于维持身体水分平衡，促进新陈代谢。',
-      activities: [
-        { content: '爷爷 - 服用 降压药', timestamp: '08:00', type: 'primary', icon: 'el-icon-check', size: 'large', color: '#0bbd87' },
-        { content: '奶奶 - 服用 钙片', timestamp: '08:30', type: 'success', icon: 'el-icon-check', color: '#0bbd87' },
-        { content: '爸爸 - 服用 维生素', timestamp: '09:00', type: 'warning', icon: 'el-icon-more' },
-        { content: '爷爷 - 服用 降压药 (晚)', timestamp: '20:00', color: '#909399' }
-      ],
+      expiringDrugs: [],
+      dailyTip: '加载中...',
+      activities: [],
       timePeriod: "" //存储当前时间段
     }
   },
   mounted() {
     // 页面加载完成后，执行时段判断
     this.judgeTimePeriod()
+    // 获取后台数据
+    this.fetchData()
   },
   methods: {
+    fetchData() {
+      getDashboardStats().then(res => {
+        const data = res.data || {}
+        
+        // Update Stat Cards
+        this.statCards[0].value = data.stockCount || 0
+        this.statCards[1].value = data.memberCount || 0
+        this.statCards[2].value = data.planCount || 0
+        this.statCards[3].value = data.expiringCount || 0
+
+        // Update Expiring Drugs
+        this.expiringDrugs = (data.expiringDrugs || []).map(item => ({
+            name: item.drugName,
+            expireDate: item.expirationDate,
+            stock: item.quantity,
+            status: item.daysUntilExpiration <= 0 ? '已过期' : '即将过期'
+        }))
+
+        // Update Daily Tip
+        this.dailyTip = data.dailyTip || '祝您健康每一天！'
+
+        // Update Activities
+        this.activities = (data.activities || []).map(item => {
+            let type = 'primary'
+            let icon = 'el-icon-time'
+            let color = '#409EFF'
+            let statusText = '待服用'
+
+            if (item.status === 1) {
+                type = 'success'
+                icon = 'el-icon-check'
+                color = '#67C23A'
+                statusText = '已服用'
+            } else if (item.status === 2) {
+                type = 'info'
+                icon = 'el-icon-close'
+                color = '#909399'
+                statusText = '已跳过'
+            }
+
+            // Format time HH:mm
+            const time = item.scheduledTime ? item.scheduledTime.substring(11, 16) : ''
+
+            return {
+                content: `${item.memberName} - ${item.drugName} (${statusText})`,
+                timestamp: time,
+                type: type,
+                icon: icon,
+                color: color,
+                size: 'large'
+            }
+        })
+      }).catch(err => {
+        console.error("获取看板数据失败", err)
+        this.dailyTip = "数据加载失败，请刷新重试"
+      })
+    },
     // 核心方法：获取当前时间并判断时段
     judgeTimePeriod() {
       const now = new Date() // 获取当前时间对象

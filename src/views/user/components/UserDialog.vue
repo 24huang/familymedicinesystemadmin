@@ -10,9 +10,6 @@
       <el-form-item label="昵称" prop="nickname">
         <el-input v-model="form.nickname" placeholder="请输入昵称" />
       </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="form.email" placeholder="请输入邮箱" />
-      </el-form-item>
       <el-form-item label="手机号" prop="phone">
         <el-input v-model="form.phone" placeholder="请输入手机号" />
       </el-form-item>
@@ -36,11 +33,10 @@ export default {
       loading: false,
       isEdit: false,
       form: {
-        id: undefined,
+        userId: undefined,
         username: '',
         password: '',
         nickname: '',
-        email: '',
         phone: ''
       },
       rules: {
@@ -71,11 +67,10 @@ export default {
     },
     resetForm() {
       this.form = {
-        id: undefined,
+        userId: undefined,
         username: '',
         password: '',
         nickname: '',
-        email: '',
         phone: ''
       }
       this.$nextTick(() => {

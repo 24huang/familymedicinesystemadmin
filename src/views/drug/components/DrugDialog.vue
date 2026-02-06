@@ -38,9 +38,9 @@
             >
               <el-option
                 v-for="item in categoryOptions"
-                :key="item.id"
+                :key="item.categoryId"
                 :label="item.name"
-                :value="item.id"
+                :value="item.categoryId"
               >
               </el-option>
             </el-select>
@@ -221,21 +221,24 @@ export default {
     },
     reset() {
       this.form = {
-        id: undefined,
-        code: '',
+        drugId: undefined,
+        barCode: '',
         name: '',
         tradeName: '',
         categoryId: undefined,
         categoryType: undefined,
+        usageType: undefined,
+        form: '',
         spec: '',
-        package: '',
-        validity: '',
         manufacturer: '',
         approvalNumber: '',
         price: 0,
         stock: 0,
+        shelfLife: undefined,
         usageDosage: '',
-        imageUrl: ''
+        description: '',
+        imageUrl: '',
+        instructionUrl: ''
       }
       this.$nextTick(() => {
         if (this.$refs.form) {
