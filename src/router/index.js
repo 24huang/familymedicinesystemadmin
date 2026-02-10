@@ -68,6 +68,19 @@ const routes = [
     ]
   },
   {
+    path: '/health',
+    component: Layout,
+    meta: { title: '健康数据管理', icon: 'el-icon-data-line' },
+    children: [
+      {
+        path: 'vital-signs',
+        name: 'VitalSigns',
+        component: () => import('@/views/health/vital.vue'),
+        meta: { title: '体征数据监测' }
+      }
+    ]
+  },
+  {
     path: '/medication',
     component: Layout,
     meta: { title: '用药提醒管理', icon: 'el-icon-alarm-clock' },

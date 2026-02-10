@@ -30,7 +30,7 @@ export function updatePlan(data) {
 // 删除用药计划
 export function deletePlan(id) {
   return request({
-    url: `${id}`,
+    url: `/admin/medication/plan/delete/${id}`,
     method: 'delete'
   })
 }
