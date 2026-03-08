@@ -12,6 +12,9 @@
       </div>
       <el-row :gutter="20">
         <el-col :span="6">
+          <div class="avatar-container">
+            <el-avatar :size="80" :src="overview.memberInfo.avatarUrl || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"></el-avatar>
+          </div>
           <div class="info-item">
             <div class="label">姓名</div>
             <div class="value">{{ overview.memberInfo.name }}</div>
@@ -116,7 +119,8 @@ export default {
           name: '',
           age: 0,
           gender: '',
-          healthCondition: ''
+          healthCondition: '',
+          avatarUrl: ''
         },
         stats: {
           totalPlans: 0,
@@ -194,6 +198,10 @@ export default {
 <style scoped>
 .archive-container {
   padding: 20px;
+}
+.avatar-container {
+  text-align: center;
+  margin-bottom: 20px;
 }
 .header-section {
   display: flex;

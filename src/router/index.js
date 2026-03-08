@@ -112,6 +112,19 @@ const routes = [
     ]
   },
   {
+    path: '/monitor',
+    component: Layout,
+    meta: { title: '系统监控', icon: 'el-icon-monitor', roles: [0, 1] },
+    children: [
+      {
+        path: 'operlog',
+        name: 'Operlog',
+        component: () => import('@/views/monitor/operlog/index.vue'),
+        meta: { title: '操作日志', roles: [0, 1] }
+      }
+    ]
+  },
+  {
     path: '/user',
     component: Layout,
     children: [

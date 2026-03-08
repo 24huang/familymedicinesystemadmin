@@ -211,62 +211,75 @@ export default {
 
 <style scoped>
 .home-container {
-  padding: 20px;
+  padding: 0;
 }
 
 .welcome-section {
-  background: white;
-  padding: 20px 30px;
+  background: linear-gradient(120deg, #ffffff 0%, #f0f7ff 100%);
+  padding: 30px 40px;
   border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  border-left: 5px solid #409EFF;
 }
 
 .welcome-text h2 {
-  font-size: 24px;
+  font-size: 26px;
   color: #303133;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  font-weight: 600;
 }
 
 .welcome-text p {
-  color: #909399;
+  color: #606266;
+  font-size: 16px;
 }
 
 .welcome-img {
-  height: 80px;
-  opacity: 0.8;
+  height: 100px;
+  opacity: 1;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+}
+
+.stat-cards {
+  margin-bottom: 24px;
 }
 
 .stat-card-container {
-  margin-bottom: 20px;
   cursor: pointer;
-  transition: transform 0.3s;
+  transition: all 0.3s;
+  height: 100px;
+  overflow: hidden;
+  position: relative;
 }
 
 .stat-card-container:hover {
   transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
 }
 
 .stat-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 20px;
+  margin-right: 24px;
   color: white;
-  font-size: 24px;
+  font-size: 28px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
 .stat-info .stat-value {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 28px;
+  font-weight: 700;
   color: #303133;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
+  font-family: 'DIN', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .stat-info .stat-label {
@@ -275,13 +288,17 @@ export default {
 }
 
 .mb-20 {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+}
+
+.box-card {
+  height: 100%;
 }
 
 .quick-actions {
   display: flex;
   justify-content: space-around;
-  padding: 10px 0;
+  padding: 20px 0;
 }
 
 .action-item {
@@ -290,23 +307,31 @@ export default {
   align-items: center;
   cursor: pointer;
   transition: all 0.3s;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .action-item:hover {
   transform: scale(1.05);
+  background-color: #f5f7fa;
 }
 
 .action-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 24px;
-  margin-bottom: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  font-size: 28px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: all 0.3s;
+}
+
+.action-item:hover .action-icon {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
 }
 
 .bg-blue { background: linear-gradient(135deg, #409EFF, #36D1DC); }
@@ -314,15 +339,41 @@ export default {
 .bg-orange { background: linear-gradient(135deg, #E6A23C, #f6d365); }
 .bg-purple { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
 
+.bg-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none !important;
+}
+
 .health-tip-container {
   padding: 30px;
   color: white;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .health-tip-container h3 {
-  margin-bottom: 10px;
-  font-size: 18px;
+  margin-bottom: 16px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.health-tip-container h3:before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 20px;
+  background: white;
+  margin-right: 10px;
+  border-radius: 2px;
+}
+
+.health-tip-container p {
+  font-size: 15px;
+  line-height: 1.6;
+  opacity: 0.95;
 }
 
 .clearfix:before,

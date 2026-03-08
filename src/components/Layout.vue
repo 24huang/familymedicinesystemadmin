@@ -32,6 +32,13 @@
           <i class="el-icon-user"></i>
           <span slot="title">家庭成员</span>
         </el-menu-item>
+        <el-submenu index="/health">
+          <template slot="title">
+            <i class="el-icon-data-line"></i>
+            <span slot="title">健康数据管理</span>
+          </template>
+          <el-menu-item index="/health/vital-signs">体征数据监测</el-menu-item>
+        </el-submenu>
         <el-submenu index="/medication">
           <template slot="title">
             <i class="el-icon-alarm-clock"></i>
@@ -44,6 +51,13 @@
           <i class="el-icon-bell"></i>
           <span slot="title">消息通知</span>
         </el-menu-item>
+        <el-submenu index="/monitor" v-if="isAdmin || isHouseHolder">
+          <template slot="title">
+            <i class="el-icon-monitor"></i>
+            <span slot="title">系统监控</span>
+          </template>
+          <el-menu-item index="/monitor/operlog">操作日志</el-menu-item>
+        </el-submenu>
         <el-menu-item index="/user" v-if="isAdmin">
           <i class="el-icon-s-custom"></i>
           <span slot="title">用户管理</span>
@@ -110,6 +124,9 @@ export default {
     },
     isAdmin() {
       return this.userRole === 0
+    },
+    isHouseHolder() {
+      return this.userRole === 1
     }
   },
   created() {
@@ -181,11 +198,13 @@ export default {
 
 .sidebar {
   width: 240px;
-  background-color: #2b3b4e;
+  background-color: #001529; /* 深色背景 */
   box-shadow: 2px 0 6px rgba(0,21,41,.35);
   transition: width 0.3s;
   overflow: hidden;
   z-index: 1001;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar.collapsed {
@@ -197,10 +216,11 @@ export default {
   display: flex;
   align-items: center;
   padding-left: 20px;
-  background-color: #263445;
+  background-color: #002140;
   color: white;
   overflow: hidden;
   transition: all 0.3s;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
 }
 
 .sidebar.collapsed .logo {
@@ -212,6 +232,7 @@ export default {
   width: 32px;
   height: 32px;
   margin-right: 12px;
+  filter: drop-shadow(0 0 4px rgba(255,255,255,0.3));
 }
 
 .sidebar.collapsed .logo-img {
@@ -223,10 +244,32 @@ export default {
   font-weight: 600;
   white-space: nowrap;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  letter-spacing: 1px;
 }
 
 .sidebar-menu {
   border: none;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* 覆盖菜单样式 */
+::v-deep .el-menu {
+  border-right: none;
+}
+
+::v-deep .el-menu-item, ::v-deep .el-submenu__title {
+  height: 50px;
+  line-height: 50px;
+}
+
+::v-deep .el-menu-item.is-active {
+  background-color: #1890ff !important;
+  color: #fff !important;
+}
+
+::v-deep .el-menu-item:hover, ::v-deep .el-submenu__title:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 .main-container {
@@ -234,6 +277,7 @@ export default {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background-color: #f0f2f5;
 }
 
 .header {
@@ -243,7 +287,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 24px;
+  z-index: 1000;
 }
 
 .header-left {
@@ -253,6 +298,12 @@ export default {
 
 .header-left .el-button {
   margin-right: 20px;
+  font-size: 20px;
+  color: #5a5e66;
+}
+
+.header-left .el-button:hover {
+  color: #409EFF;
 }
 
 .header-right {
@@ -264,25 +315,43 @@ export default {
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 5px 10px;
-  border-radius: 4px;
-  transition: background-color 0.3s;
+  padding: 4px 12px;
+  border-radius: 20px;
+  transition: all 0.3s;
 }
 
 .user-info:hover {
-  background-color: #f5f5f5;
+  background-color: rgba(0,0,0,0.025);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .username {
   margin: 0 8px;
   font-size: 14px;
-  color: #333;
+  color: #606266;
+  font-weight: 500;
 }
 
 .content {
   flex: 1;
-  padding: 20px;
+  padding: 24px;
   overflow-y: auto;
-  background-color: #f0f2f5;
+  overflow-x: hidden;
+}
+
+/* 页面切换动画 */
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+  transition: all 0.5s;
+}
+
+.fade-transform-enter {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.fade-transform-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
 }
 </style>
