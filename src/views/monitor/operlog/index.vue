@@ -233,7 +233,7 @@ export default {
       });
     },
     // 业务类型字典翻译
-    businessTypeFormat(row, column) {
+    businessTypeFormat(row) {
         const type = row.businessType;
         const found = this.businessTypeOptions.find(item => item.value === type);
         return found ? found.label : type;

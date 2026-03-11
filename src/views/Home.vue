@@ -1,7 +1,7 @@
 <template>
   <div class="home-container">
     <!-- Welcome Section -->
-    <div class="welcome-section">
+    <div class="welcome-section animate-fade-in-up">
       <div class="welcome-text">
         <h2>{{timePeriod}}，管理员</h2>
         <p>祝您今天心情愉快，家庭健康！</p>
@@ -12,7 +12,7 @@
     <!-- Statistics Cards -->
     <el-row :gutter="20" class="stat-cards">
       <el-col :span="6" v-for="(item, index) in statCards" :key="index">
-        <el-card shadow="hover" class="stat-card-container" :body-style="{ padding: '20px', display: 'flex', alignItems: 'center' }">
+        <el-card shadow="hover" class="stat-card-container animate-fade-in-up" :style="{ animationDelay: (index * 0.1 + 0.2) + 's' }" :body-style="{ padding: '20px', display: 'flex', alignItems: 'center' }">
           <div class="stat-icon" :style="{ backgroundColor: item.color }">
             <i :class="item.icon"></i>
           </div>
@@ -24,7 +24,7 @@
       </el-col>
     </el-row>
 
-    <el-row :gutter="20" class="dashboard-content">
+    <el-row :gutter="20" class="dashboard-content animate-fade-in-up" style="animation-delay: 0.6s">
       <!-- Left Column -->
       <el-col :span="16">
         <!-- Quick Actions -->
@@ -90,18 +90,20 @@
            <div slot="header" class="clearfix">
             <span><i class="el-icon-date"></i> 今日用药计划</span>
           </div>
-          <el-timeline>
-            <el-timeline-item
-              v-for="(activity, index) in activities"
-              :key="index"
-              :icon="activity.icon"
-              :type="activity.type"
-              :color="activity.color"
-              :size="activity.size"
-              :timestamp="activity.timestamp">
-              {{ activity.content }}
-            </el-timeline-item>
-          </el-timeline>
+          <div class="plan-scroll">
+            <el-timeline>
+              <el-timeline-item
+                v-for="(activity, index) in activities"
+                :key="index"
+                :icon="activity.icon"
+                :type="activity.type"
+                :color="activity.color"
+                :size="activity.size"
+                :timestamp="activity.timestamp">
+                {{ activity.content }}
+              </el-timeline-item>
+            </el-timeline>
+          </div>
         </el-card>
       </el-col>
     </el-row>
@@ -198,11 +200,11 @@ export default {
 
       // 按规则判断时段，赋值给响应式数据
       if (hours >= 6 && hours < 12) {
-        this.timePeriod = '早上'
+        this.timePeriod = '早上好'
       } else if (hours >= 12 && hours < 18) {
-        this.timePeriod = '下午'
+        this.timePeriod = '下午好'
       } else {
-        this.timePeriod = '晚上'
+        this.timePeriod = '晚上好'
       }
     }
   }
@@ -211,75 +213,63 @@ export default {
 
 <style scoped>
 .home-container {
-  padding: 0;
+  padding: 20px;
 }
 
 .welcome-section {
-  background: linear-gradient(120deg, #ffffff 0%, #f0f7ff 100%);
-  padding: 30px 40px;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 20px 30px;
+  border-radius: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-  border-left: 5px solid #409EFF;
+  margin-bottom: 20px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
 }
 
 .welcome-text h2 {
-  font-size: 26px;
+  font-size: 24px;
   color: #303133;
-  margin-bottom: 12px;
-  font-weight: 600;
+  margin-bottom: 10px;
 }
 
 .welcome-text p {
-  color: #606266;
-  font-size: 16px;
+  color: #909399;
 }
 
 .welcome-img {
-  height: 100px;
-  opacity: 1;
-  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
-}
-
-.stat-cards {
-  margin-bottom: 24px;
+  height: 80px;
+  opacity: 0.8;
 }
 
 .stat-card-container {
+  margin-bottom: 20px;
   cursor: pointer;
-  transition: all 0.3s;
-  height: 100px;
-  overflow: hidden;
-  position: relative;
+  transition: transform 0.3s;
 }
 
 .stat-card-container:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+  transform: translateY(-2px);
 }
 
 .stat-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 24px;
+  margin-right: 20px;
   color: white;
-  font-size: 28px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  font-size: 24px;
 }
 
 .stat-info .stat-value {
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: bold;
   color: #303133;
-  margin-bottom: 4px;
-  font-family: 'DIN', 'Helvetica Neue', Arial, sans-serif;
+  margin-bottom: 5px;
 }
 
 .stat-info .stat-label {
@@ -288,17 +278,13 @@ export default {
 }
 
 .mb-20 {
-  margin-bottom: 24px;
-}
-
-.box-card {
-  height: 100%;
+  margin-bottom: 20px;
 }
 
 .quick-actions {
   display: flex;
   justify-content: space-around;
-  padding: 20px 0;
+  padding: 10px 0;
 }
 
 .action-item {
@@ -307,31 +293,23 @@ export default {
   align-items: center;
   cursor: pointer;
   transition: all 0.3s;
-  padding: 10px;
-  border-radius: 8px;
 }
 
 .action-item:hover {
   transform: scale(1.05);
-  background-color: #f5f7fa;
 }
 
 .action-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 28px;
-  margin-bottom: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  transition: all 0.3s;
-}
-
-.action-item:hover .action-icon {
-  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  font-size: 24px;
+  margin-bottom: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .bg-blue { background: linear-gradient(135deg, #409EFF, #36D1DC); }
@@ -339,41 +317,51 @@ export default {
 .bg-orange { background: linear-gradient(135deg, #E6A23C, #f6d365); }
 .bg-purple { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
 
-.bg-gradient {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none !important;
-}
-
 .health-tip-container {
   padding: 30px;
   color: white;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  background: linear-gradient(135deg, rgba(45, 107, 255, 1) 0%, rgba(25, 198, 210, 0.95) 100%);
 }
 
 .health-tip-container h3 {
-  margin-bottom: 16px;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
+  margin-bottom: 10px;
+  font-size: 18px;
 }
 
-.health-tip-container h3:before {
-  content: '';
-  display: inline-block;
-  width: 4px;
-  height: 20px;
-  background: white;
-  margin-right: 10px;
-  border-radius: 2px;
+.plan-scroll {
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 10px;
+  scroll-snap-type: y proximity;
+  overscroll-behavior: contain;
 }
 
-.health-tip-container p {
-  font-size: 15px;
-  line-height: 1.6;
-  opacity: 0.95;
+.plan-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.35) transparent;
+}
+
+.plan-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.plan-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.plan-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 116, 139, 0.35);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.plan-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(100, 116, 139, 0.5);
+}
+
+::v-deep .plan-scroll .el-timeline-item {
+  scroll-snap-align: start;
 }
 
 .clearfix:before,

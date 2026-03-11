@@ -1,6 +1,6 @@
 <template>
   <div class="drug-container">
-    <el-card class="filter-container" shadow="hover">
+    <el-card class="filter-container animate-fade-in-up" shadow="hover">
       <div slot="header" class="clearfix">
         <span class="filter-title"><i class="el-icon-search"></i> 筛选查询</span>
       </div>
@@ -38,7 +38,7 @@
       </el-form>
     </el-card>
 
-    <el-card class="table-container" shadow="hover">
+    <el-card class="table-container animate-fade-in-up" shadow="hover" style="animation-delay: 0.2s">
       <div slot="header" class="table-header">
         <div class="header-left">
           <span class="table-title"><i class="el-icon-s-grid"></i> 药品列表</span>

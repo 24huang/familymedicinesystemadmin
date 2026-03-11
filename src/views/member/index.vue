@@ -1,6 +1,9 @@
 <template>
   <div class="member-container">
-    <el-card class="filter-container">
+    <el-card class="filter-container animate-fade-in-up" shadow="hover">
+      <div slot="header" class="clearfix">
+        <span class="filter-title"><i class="el-icon-search"></i> 筛选查询</span>
+      </div>
       <el-form :inline="true" :model="queryParams" size="small">
         <el-form-item label="户主ID">
           <el-input v-model="queryParams.householdId" placeholder="请输入户主ID" clearable @keyup.enter.native="handleQuery"></el-input>
@@ -15,9 +18,14 @@
       </el-form>
     </el-card>
 
-    <el-card class="table-container">
+    <el-card class="table-container animate-fade-in-up" shadow="hover" style="animation-delay: 0.2s">
       <div slot="header" class="table-header">
-        <el-button type="primary" icon="el-icon-plus" size="small" @click="handleAdd">添加成员</el-button>
+        <div class="header-left">
+          <span class="table-title"><i class="el-icon-s-grid"></i> 成员列表</span>
+        </div>
+        <div class="header-right">
+          <el-button type="primary" icon="el-icon-plus" size="small" @click="handleAdd">添加成员</el-button>
+        </div>
       </div>
 
       <el-table
@@ -186,6 +194,21 @@ export default {
 }
 .filter-container {
   margin-bottom: 20px;
+}
+.filter-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #303133;
+}
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.table-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #303133;
 }
 .pagination-container {
   margin-top: 20px;

@@ -11,7 +11,7 @@
         :default-active="activeMenu"
         class="sidebar-menu"
         :collapse="isCollapse"
-        background-color="#2b3b4e"
+        background-color="transparent"
         text-color="#bfcbd9"
         active-text-color="#409EFF"
         router
@@ -97,7 +97,9 @@
       
       <!-- 内容区 -->
       <div class="content">
-        <router-view />
+        <transition name="fade-transform" mode="out-in">
+          <router-view />
+        </transition>
       </div>
     </div>
   </div>
@@ -198,8 +200,11 @@ export default {
 
 .sidebar {
   width: 240px;
-  background-color: #001529; /* 深色背景 */
-  box-shadow: 2px 0 6px rgba(0,21,41,.35);
+  background:
+    radial-gradient(900px 520px at 10% -20%, rgba(45, 107, 255, 0.35), transparent 55%),
+    linear-gradient(180deg, #06162f 0%, #0b2a57 100%);
+  background-size: auto, auto;
+  box-shadow: 10px 0 28px rgba(2, 6, 23, 0.28);
   transition: width 0.3s;
   overflow: hidden;
   z-index: 1001;
@@ -216,11 +221,11 @@ export default {
   display: flex;
   align-items: center;
   padding-left: 20px;
-  background-color: #002140;
+  background-color: transparent; /* 透明背景以显示 sidebar 渐变 */
   color: white;
   overflow: hidden;
   transition: all 0.3s;
-  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .sidebar.collapsed .logo {
@@ -261,10 +266,12 @@ export default {
 ::v-deep .el-menu-item, ::v-deep .el-submenu__title {
   height: 50px;
   line-height: 50px;
+  margin: 6px 10px;
+  border-radius: 14px;
 }
 
 ::v-deep .el-menu-item.is-active {
-  background-color: #1890ff !important;
+  background-image: linear-gradient(135deg, rgba(45, 107, 255, 1), rgba(25, 198, 210, 0.9)) !important;
   color: #fff !important;
 }
 
@@ -277,18 +284,20 @@ export default {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background-color: #f0f2f5;
+  background-color: transparent;
 }
 
 .header {
   height: 60px;
-  background-color: white;
-  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  background-color: rgba(255, 255, 255, 0.76);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
   z-index: 1000;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .header-left {
@@ -303,7 +312,7 @@ export default {
 }
 
 .header-left .el-button:hover {
-  color: #409EFF;
+  color: var(--primary-color);
 }
 
 .header-right {
@@ -339,19 +348,5 @@ export default {
   overflow-x: hidden;
 }
 
-/* 页面切换动画 */
-.fade-transform-leave-active,
-.fade-transform-enter-active {
-  transition: all 0.5s;
-}
-
-.fade-transform-enter {
-  opacity: 0;
-  transform: translateX(-30px);
-}
-
-.fade-transform-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
+/* 移除重复的 fade-transform 动画，已在 App.vue 全局定义 */
 </style>

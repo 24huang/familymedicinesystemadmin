@@ -3,10 +3,10 @@
     <div class="login-content">
       <div class="login-left">
         <div class="login-info">
-          <img src="@/assets/logo.svg" class="logo-img" alt="logo">
-          <h1>家庭药品管理系统</h1>
-          <p class="subtitle">Family Medicine Management System</p>
-          <ul class="features">
+          <img src="@/assets/logo.svg" class="logo-img animate-fade-in-up" alt="logo" style="animation-delay: 0.1s">
+          <h1 class="animate-fade-in-up" style="animation-delay: 0.2s">家庭药品管理系统</h1>
+          <p class="subtitle animate-fade-in-up" style="animation-delay: 0.3s">Family Medicine Management System</p>
+          <ul class="features animate-fade-in-up" style="animation-delay: 0.4s">
             <li><i class="el-icon-check"></i> 智能药品库存管理</li>
             <li><i class="el-icon-check"></i> 科学用药提醒服务</li>
             <li><i class="el-icon-check"></i> 家庭成员健康档案</li>
@@ -16,7 +16,7 @@
       </div>
       
       <div class="login-right">
-        <div class="login-form-box">
+        <div class="login-form-box animate-fade-in-up" style="animation-delay: 0.5s">
           <h2>管理员登录</h2>
           <p class="login-tip">欢迎回来，请登录您的账户</p>
           
@@ -140,51 +140,28 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background-image: url("https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80");
-  background-size: cover;
-  background-position: center;
-  position: relative;
-}
-
-.login-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(240, 242, 245, 0.8);
-  backdrop-filter: blur(5px);
-  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23409eff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
 .login-content {
-  position: relative;
-  z-index: 1;
   display: flex;
   width: 900px;
-  height: 550px;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  height: 520px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: all 0.3s;
-}
-
-.login-content:hover {
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
 }
 
 .login-left {
   flex: 1;
   background: linear-gradient(135deg, #409EFF 0%, #36d1dc 100%);
-  padding: 60px 50px;
+  padding: 60px 40px;
   color: white;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  overflow: hidden;
 }
 
 .login-bg-decoration {
@@ -194,14 +171,7 @@ export default {
   right: 0;
   bottom: 0;
   background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23fff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
-  opacity: 0.6;
-  animation: float 20s infinite linear;
-}
-
-@keyframes float {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  opacity: 0.8;
 }
 
 .login-info {
@@ -210,29 +180,25 @@ export default {
 }
 
 .logo-img {
-  width: 80px;
-  height: 80px;
-  margin-bottom: 24px;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 20px;
   background: rgba(255, 255, 255, 0.2);
   padding: 12px;
-  border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-  backdrop-filter: blur(5px);
+  border-radius: 12px;
 }
 
 .login-left h1 {
-  font-size: 36px;
-  margin: 0 0 12px;
-  font-weight: 700;
+  font-size: 32px;
+  margin: 0 0 10px;
+  font-weight: 600;
   letter-spacing: 1px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .subtitle {
-  font-size: 16px;
+  font-size: 14px;
   opacity: 0.9;
   margin-bottom: 40px;
-  font-weight: 300;
 }
 
 .features {
@@ -242,25 +208,19 @@ export default {
 }
 
 .features li {
-  margin: 18px 0;
+  margin: 15px 0;
   font-size: 16px;
   display: flex;
   align-items: center;
-  opacity: 0.95;
-  transition: transform 0.3s;
-}
-
-.features li:hover {
-  transform: translateX(10px);
+  opacity: 0.9;
 }
 
 .features li i {
-  margin-right: 12px;
-  background: rgba(255, 255, 255, 0.25);
+  margin-right: 10px;
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  padding: 5px;
+  padding: 4px;
   font-size: 12px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .login-right {
@@ -269,75 +229,39 @@ export default {
   align-items: center;
   justify-content: center;
   background: white;
-  position: relative;
 }
 
 .login-form-box {
-  width: 360px;
+  width: 320px;
   padding: 0 20px;
 }
 
 .login-form-box h2 {
-  font-size: 28px;
+  font-size: 24px;
   color: #303133;
   margin: 0 0 10px;
   text-align: center;
-  font-weight: 600;
 }
 
 .login-tip {
   color: #909399;
   font-size: 14px;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   text-align: center;
 }
 
-::v-deep .el-input__inner {
-  height: 50px;
-  line-height: 50px;
-  border-radius: 8px;
-  padding-left: 40px;
-  background-color: #f8f9fa;
-  border: 1px solid #e4e7ed;
-}
-
-::v-deep .el-input__inner:focus {
-  background-color: #fff;
-  border-color: #409EFF;
-  box-shadow: 0 0 0 3px rgba(64, 158, 255, 0.1);
-}
-
-::v-deep .el-input__prefix {
-  left: 10px;
-  line-height: 50px;
-}
-
-::v-deep .el-input__prefix i {
-  font-size: 18px;
-  line-height: 50px;
-  color: #909399;
+.login-form .el-input__inner {
+  height: 45px;
+  line-height: 45px;
 }
 
 .login-button {
   width: 100%;
-  height: 50px;
+  height: 45px;
   font-size: 16px;
-  border-radius: 8px;
-  margin-top: 20px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  background: linear-gradient(90deg, #409EFF 0%, #36d1dc 100%);
-  border: none;
-  box-shadow: 0 4px 15px rgba(64, 158, 255, 0.3);
-  transition: all 0.3s;
-}
-
-.login-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(64, 158, 255, 0.4);
-}
-
-.login-button:active {
-  transform: translateY(0);
+  border-radius: 4px;
+  margin-top: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
 }
 </style>

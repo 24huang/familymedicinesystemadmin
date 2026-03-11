@@ -135,6 +135,10 @@ const routes = [
         meta: { title: '系统用户管理', icon: 'el-icon-user', roles: [0] }
       }
     ]
+  },
+  {
+    path: '/*',
+    redirect: '/login'
   }
 ]
 
