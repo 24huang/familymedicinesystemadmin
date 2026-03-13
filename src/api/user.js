@@ -40,3 +40,12 @@ export function deleteUser(id) {
     method: 'post'
   })
 }
+
+// 修改用户状态
+export function updateUserStatus(data) {
+  return request({
+    url: '/admin/user/status',
+    method: 'post',
+    data
+  })
+}

@@ -6,7 +6,7 @@
 
 ### 🏠 首页
 - 统计卡片展示（药品总数、即将过期、库存不足、今日提醒）
-- 今日用药提醒列表
+- 今日用药计划列表（固定高度，内部滚动）
 - 即将过期药品提醒
 - 快捷操作入口
 
@@ -41,23 +41,25 @@
 src/
 ├── api/                    # API接口
 │   ├── auth.js            # 认证相关接口
-│   ├── medicine.js        # 药品管理接口
-│   ├── medication.js      # 用药提醒接口
-│   └── family.js          # 家庭成员接口
+│   ├── dashboard.js       # 首页看板
+│   ├── drug.js            # 药品管理
+│   ├── medication.js      # 用药计划/记录
+│   ├── member.js          # 家庭成员
+│   ├── category.js        # 分类管理
+│   ├── notification.js    # 消息通知
+│   └── request.js         # Axios封装与拦截
 ├── components/             # 公共组件
 │   └── Layout.vue         # 主布局组件
 ├── views/                  # 页面组件
 │   ├── Login.vue          # 登录页面
 │   ├── Home.vue           # 首页
-│   ├── medicine/          # 药品管理
-│   │   ├── MedicineList.vue    # 药品列表
-│   │   └── ScanMedicine.vue    # 扫码录入
-│   └── medication/        # 用药提醒
-│       ├── Calendar.vue         # 提醒日历
-│       └── Records.vue          # 用药记录
+│   ├── drug/              # 药品管理
+│   ├── medication/        # 用药提醒管理（计划/记录）
+│   ├── member/            # 家庭成员
+│   ├── category/          # 分类管理
+│   ├── notification/      # 消息通知
+│   └── monitor/operlog/   # 操作日志
 ├── router/                 # 路由配置
-├── utils/                  # 工具函数
-├── store/                  # 状态管理
 └── assets/                 # 静态资源
 ```
 
@@ -89,9 +91,9 @@ npm run lint
 
 ## 后端接口配置
 
-项目默认连接后端地址：`http://localhost:8080/api`
+开发环境默认通过 devServer 代理转发到后端 `http://localhost:8080`（见 vue.config.js）。
 
-如需修改，请编辑 `src/api/request.js` 文件中的 `baseURL` 配置：
+如需修改，请编辑 [vue.config.js](file:///d:/code-project/my-project/familymedicinesystemadmin/vue.config.js) 中的 proxy 或 `src/api/request.js` 的 baseURL。
 
 ```javascript
 const service = axios.create({
@@ -155,7 +157,11 @@ const service = axios.create({
 ```bash
 npm run serve
 ```
-访问地址：http://localhost:8080
+访问地址：http://localhost:3000（如端口占用，Vue CLI 会自动递增）
+
+## 视觉与交互优化
+- 全局主题：浅色网格底纹 + 蓝→青主色渐变（按钮/卡片标题标记条/表格高亮）
+- 布局质感：侧边栏深色渐变 + 顶栏玻璃感
 
 ### 生产环境
 ```bash
