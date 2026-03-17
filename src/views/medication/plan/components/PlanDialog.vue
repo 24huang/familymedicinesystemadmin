@@ -154,6 +154,32 @@ export default {
     }
   },
   methods: {
+    parseTimes(row) {
+      if (row && Array.isArray(row.times)) {
+        return row.times
+      }
+      const raw = row && row.frequencyDetail
+      if (!raw || typeof raw !== 'string') {
+        return ['08:00']
+      }
+      const text = raw.trim()
+      if (!text) return ['08:00']
+      try {
+        if (text.startsWith('{')) {
+          const obj = JSON.parse(text)
+          if (obj && Array.isArray(obj.times) && obj.times.length > 0) return obj.times
+          return ['08:00']
+        }
+        if (text.startsWith('[')) {
+          const arr = JSON.parse(text)
+          if (Array.isArray(arr) && arr.length > 0) return arr
+          return ['08:00']
+        }
+      } catch (e) {
+        return ['08:00']
+      }
+      return ['08:00']
+    },
     open(title, row) {
       this.title = title
       this.visible = true
@@ -170,7 +196,7 @@ export default {
           startDate: row.startDate,
           endDate: row.endDate,
           frequencyType: row.frequencyType,
-          times: row.times || ['08:00'], // 直接使用 times 数组
+          times: this.parseTimes(row),
           dosage: row.dosage,
           totalQuantity: row.totalQuantity,
           remark: row.remark,

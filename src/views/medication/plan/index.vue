@@ -143,6 +143,31 @@ export default {
     this.getList()
   },
   methods: {
+    parseTimes(row) {
+      if (row && Array.isArray(row.times)) {
+        return row.times
+      }
+      const raw = row && row.frequencyDetail
+      if (!raw || typeof raw !== 'string') {
+        return []
+      }
+      const text = raw.trim()
+      if (!text) return []
+      try {
+        if (text.startsWith('{')) {
+          const obj = JSON.parse(text)
+          if (obj && Array.isArray(obj.times)) return obj.times
+          return []
+        }
+        if (text.startsWith('[')) {
+          const arr = JSON.parse(text)
+          return Array.isArray(arr) ? arr : []
+        }
+      } catch (e) {
+        return []
+      }
+      return []
+    },
     loadMembers() {
       getMemberPage({ current: 1, size: 100 }).then(res => {
         this.memberList = res.data.records
@@ -155,7 +180,11 @@ export default {
     getList() {
       this.loading = true
       getPlanPage(this.queryParams).then(res => {
-        this.tableData = res.data.records
+        const records = (res.data && res.data.records) ? res.data.records : []
+        this.tableData = records.map(item => ({
+          ...item,
+          times: this.parseTimes(item)
+        }))
         this.total = res.data.total
       }).catch(err => {
         console.error('获取用药计划失败:', err)
