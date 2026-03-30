@@ -39,6 +39,17 @@
         </el-col>
       </el-row>
 
+      <el-form-item v-if="isAdmin" label="所属户主" prop="householdId">
+        <el-select v-model="form.householdId" filterable placeholder="请选择户主账号" style="width: 100%">
+          <el-option
+            v-for="item in householdOptions"
+            :key="item.userId"
+            :label="formatHouseholdLabel(item)"
+            :value="item.userId"
+          />
+        </el-select>
+      </el-form-item>
+
       <el-row>
         <el-col :span="12">
           <el-form-item label="关系" prop="relation">
@@ -86,6 +97,7 @@
 
 <script>
 import { addMember, updateMember } from '@/api/member'
+import { getHouseholdOptions } from '@/api/user'
 
 export default {
   name: 'MemberDialog',
@@ -94,6 +106,8 @@ export default {
       title: '',
       visible: false,
       loading: false,
+      isAdmin: false,
+      householdOptions: [],
       uploadHeaders: { Authorization: 'Bearer ' + localStorage.getItem('token') },
       form: {
         memberId: undefined,
@@ -107,9 +121,7 @@ export default {
         picture: ''
       },
       rules: {
-        householdId: [
-          { required: true, message: '请输入所属户主ID', trigger: 'blur' }
-        ],
+        householdId: [],
         name: [
           { required: true, message: '请输入姓名', trigger: 'blur' }
         ],
@@ -120,9 +132,35 @@ export default {
     }
   },
   methods: {
+    resolveIsAdmin() {
+      try {
+        const userInfoStr = localStorage.getItem('userInfo')
+        if (!userInfoStr) return false
+        const userInfo = JSON.parse(userInfoStr)
+        return userInfo && userInfo.role === 0
+      } catch (e) {
+        return false
+      }
+    },
+    loadHouseholdOptions() {
+      if (!this.isAdmin) return
+      return getHouseholdOptions({ includeAdmin: true }).then(res => {
+        this.householdOptions = res.data || []
+      })
+    },
+    formatHouseholdLabel(item) {
+      const roleText = item.role === 0 ? '管理员' : (item.role === 1 ? '户主' : '普通成员')
+      const name = item.nickname || item.username || ''
+      return `${name}（ID:${item.userId}｜${roleText}）`
+    },
     open(title, row) {
       this.title = title
       this.visible = true
+      this.isAdmin = this.resolveIsAdmin()
+      this.rules.householdId = this.isAdmin
+        ? [{ required: true, message: '请选择所属户主', trigger: 'change' }]
+        : []
+      this.loadHouseholdOptions()
       if (row) {
         this.form = { ...row }
       } else {
@@ -137,7 +175,13 @@ export default {
           healthCondition: '',
           picture: ''
         }
+        if (!this.isAdmin) {
+          this.form.householdId = localStorage.getItem('userId')
+        }
       }
+      this.$nextTick(() => {
+        this.$refs.form && this.$refs.form.clearValidate()
+      })
     },
     handleAvatarSuccess(res) {
       if (res.code === 200) {
@@ -162,8 +206,7 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           this.loading = true
-          // 如果是新增，默认使用当前登录用户的ID作为户主ID
-          if (!this.form.memberId) {
+          if (!this.form.householdId) {
             this.form.householdId = localStorage.getItem('userId')
           }
           const request = this.form.memberId ? updateMember : addMember

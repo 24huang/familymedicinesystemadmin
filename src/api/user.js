@@ -49,3 +49,12 @@ export function updateUserStatus(data) {
     data
   })
 }
+
+// 户主候选列表（用于添加成员选择户主）
+export function getHouseholdOptions(params) {
+  return request({
+    url: '/admin/user/household/options',
+    method: 'get',
+    params: params || {}
+  })
+}

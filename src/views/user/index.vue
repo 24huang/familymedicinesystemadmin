@@ -8,9 +8,24 @@
       
       <el-table v-loading="loading" :data="tableData" border style="width: 100%">
         <el-table-column prop="userId" label="ID" width="80" align="center" />
-        <el-table-column prop="username" label="用户名" width="150" align="center" />
+        <el-table-column prop="username" label="用户名" width="100" align="center" />
         <el-table-column prop="nickname" label="昵称" width="150" align="center" />
+        <el-table-column label="照片" width="100" align="center">
+          <template slot-scope="scope">
+            <el-image
+                style="width: 50px; height: 50px; border-radius: 50%"
+                :src="scope.row.avatar || ''"
+                :preview-src-list="scope.row.avatar ? [scope.row.avatar] : []"
+                fit="cover"
+            >
+              <div slot="error" class="image-slot">
+                <i class="el-icon-user-solid" style="font-size: 20px; color: #C0C4CC;"></i>
+              </div>
+            </el-image>
+          </template>
+        </el-table-column>
         <el-table-column prop="phone" label="手机号" width="150" align="center" />
+        <el-table-column prop="email" label="email" width="150" align="center" />
         <el-table-column label="角色" width="150" align="center" >
           <template v-slot="scope">
             {{ scope.row.role | roleFilter }}
@@ -30,7 +45,7 @@
         </el-table-column>
         <el-table-column prop="createTime" label="创建时间" width="180" align="center" />
         <el-table-column prop="updateTime" label="更新时间" width="180" align="center" />
-        <el-table-column label="操作" width="180" align="center" fixed="right">
+        <el-table-column label="操作" width="150" align="center" fixed="right">
           <template slot-scope="scope">
             <el-button
               size="mini"

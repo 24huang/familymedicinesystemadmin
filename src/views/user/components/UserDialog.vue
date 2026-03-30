@@ -10,6 +10,9 @@
       <el-form-item label="昵称" prop="nickname">
         <el-input v-model="form.nickname" placeholder="请输入昵称" />
       </el-form-item>
+      <el-form-item label="角色" prop="role">
+        <el-input v-model="roleText" placeholder="请输入该用户的角色"/>
+      </el-form-item>
       <el-form-item label="手机号" prop="phone">
         <el-input v-model="form.phone" placeholder="请输入手机号" />
       </el-form-item>
@@ -28,6 +31,13 @@ export default {
   name: 'UserDialog',
   data() {
     return {
+      roleText: '', // 新增：用来绑定输入框显示的文字
+      // 角色映射：你自己改这里的对应关系
+      roleMap: {
+        '管理员': 0,
+        '户主' : 1,
+        '普通成员' : 2
+      },
       visible: false,
       title: '',
       loading: false,
@@ -37,6 +47,7 @@ export default {
         username: '',
         password: '',
         nickname: '',
+        role: '',
         phone: ''
       },
       rules: {
@@ -84,6 +95,13 @@ export default {
     handleSubmit() {
       this.$refs.form.validate(valid => {
         if (valid) {
+          const roleValue = this.roleMap[this.roleText.trim()]
+          if (roleValue === undefined) {
+            this.$message.warning('请输入正确的角色：管理员/户主/普通成员')
+            return
+          }
+          // 把数字赋值给 form.role
+          this.form.role = roleValue
           this.loading = true
           const request = this.isEdit ? updateUser(this.form) : addUser(this.form)
           request.then(() => {

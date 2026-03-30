@@ -11,7 +11,7 @@
 
     <!-- Statistics Cards -->
     <el-row :gutter="20" class="stat-cards">
-      <el-col :span="6" v-for="(item, index) in statCards" :key="index">
+      <el-col :span="6" v-for="(item, index) in filteredCards" :key="index">
         <el-card shadow="hover" class="stat-card-container animate-fade-in-up" :style="{ animationDelay: (index * 0.1 + 0.2) + 's' }" :body-style="{ padding: '20px', display: 'flex', alignItems: 'center' }">
           <div class="stat-icon" :style="{ backgroundColor: item.color }">
             <i :class="item.icon"></i>
@@ -116,35 +116,63 @@ import { getDashboardStats } from '@/api/dashboard'
 export default {
   name: 'Home',
   data() {
+    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}')
     return {
       statCards: [
         { label: '库存药品', value: '-', icon: 'el-icon-box', color: '#409EFF' },
-        { label: '家庭成员', value: '-', icon: 'el-icon-user', color: '#67C23A' },
+        { label: '家庭成员', value: '-', icon: 'el-icon-user', color: '#67C23A',roles:[1]},
+        { label: '户主数量', value: '-', icon: 'el-icon-user', color: '#67C23A',roles:[0]},
         { label: '今日计划', value: '-', icon: 'el-icon-time', color: '#E6A23C' },
         { label: '缺货/过期', value: '-', icon: 'el-icon-warning', color: '#F56C6C' }
       ],
+      userRole: userInfo.role || 0,
       expiringDrugs: [],
       dailyTip: '加载中...',
       activities: [],
       timePeriod: "" //存储当前时间段
     }
   },
+
   mounted() {
     // 页面加载完成后，执行时段判断
     this.judgeTimePeriod()
     // 获取后台数据
     this.fetchData()
   },
+  computed: {
+    filteredCards() {
+      return this.statCards.filter(card => {
+        // 没配权限 → 显示
+        if (!card.roles) return true
+        // 有权限 → 匹配才显示
+        return card.roles.includes(this.userRole)
+      })
+    }
+  },
   methods: {
     fetchData() {
       getDashboardStats().then(res => {
         const data = res.data || {}
-        
-        // Update Stat Cards
-        this.statCards[0].value = data.stockCount || 0
-        this.statCards[1].value = data.memberCount || 0
-        this.statCards[2].value = data.planCount || 0
-        this.statCards[3].value = data.expiringCount || 0
+
+        this.filteredCards.forEach(card => {
+          switch (card.label) {
+            case '库存药品':
+              card.value = data.stockCount || 0
+              break
+            case '家庭成员':
+              card.value = data.memberCount +1 || 0
+              break
+            case '户主数量':
+              card.value = data.memberCount || 0 // 你接口字段自己改对
+              break
+            case '今日计划':
+              card.value = data.planCount || 0
+              break
+            case '缺货/过期':
+              card.value = data.expiringCount || 0
+              break
+          }
+        })
 
         // Update Expiring Drugs
         this.expiringDrugs = (data.expiringDrugs || []).map(item => ({

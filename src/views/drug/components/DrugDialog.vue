@@ -90,11 +90,11 @@
             <el-input-number v-model="form.price" :precision="2" :step="0.1" :min="0" style="width: 100%"></el-input-number>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="库存" prop="stock">
-            <el-input-number v-model="form.stock" :min="0" :step="1" style="width: 100%"></el-input-number>
-          </el-form-item>
-        </el-col>
+<!--        <el-col :span="8">-->
+<!--          <el-form-item label="库存" prop="stock">-->
+<!--            <el-input-number v-model="form.stock" :min="0" :step="1" style="width: 100%"></el-input-number>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
         <el-col :span="8">
           <el-form-item label="保质期(月)" prop="shelfLife">
             <el-input-number v-model="form.shelfLife" :min="0" :step="1" style="width: 100%"></el-input-number>
