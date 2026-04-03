@@ -162,8 +162,8 @@ export default {
             case '家庭成员':
               card.value = data.memberCount +1 || 0
               break
-            case '户主数量':
-              card.value = data.memberCount || 0 // 你接口字段自己改对
+            case '用户数量':
+              card.value = data.memberCount + 1  || 0 // 你接口字段自己改对
               break
             case '今日计划':
               card.value = data.planCount || 0
