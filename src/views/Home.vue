@@ -121,7 +121,7 @@ export default {
       statCards: [
         { label: '库存药品', value: '-', icon: 'el-icon-box', color: '#409EFF' },
         { label: '家庭成员', value: '-', icon: 'el-icon-user', color: '#67C23A',roles:[1]},
-        { label: '户主数量', value: '-', icon: 'el-icon-user', color: '#67C23A',roles:[0]},
+        { label: '用户数量', value: '-', icon: 'el-icon-user', color: '#67C23A',roles:[0]},
         { label: '今日计划', value: '-', icon: 'el-icon-time', color: '#E6A23C' },
         { label: '缺货/过期', value: '-', icon: 'el-icon-warning', color: '#F56C6C' }
       ],
@@ -160,10 +160,10 @@ export default {
               card.value = data.stockCount || 0
               break
             case '家庭成员':
-              card.value = data.memberCount +1 || 0
+              card.value = (data.userCount || 0)
               break
             case '用户数量':
-              card.value = data.memberCount + 1  || 0 // 你接口字段自己改对
+              card.value = data.userCount || 0
               break
             case '今日计划':
               card.value = data.planCount || 0
