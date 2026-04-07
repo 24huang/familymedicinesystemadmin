@@ -89,27 +89,35 @@ export default {
 <style scoped>
 .detail-header {
   display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
+  gap: 24px;
+  margin-bottom: 28px;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(64, 158, 255, 0.06), rgba(25, 198, 210, 0.04));
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 .detail-image {
-  width: 120px;
-  height: 120px;
-  border-radius: 8px;
+  width: 140px;
+  height: 140px;
+  border-radius: 12px;
   flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.08);
 }
 .detail-info {
   flex: 1;
 }
 .detail-info h3 {
-  margin: 0 0 5px 0;
-  font-size: 20px;
-  color: #303133;
+  margin: 0 0 8px 0;
+  font-size: 22px;
+  color: var(--text-primary);
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 .common-name {
-  color: #909399;
+  color: var(--text-secondary);
   font-size: 14px;
-  margin: 0 0 10px 0;
+  margin: 0 0 12px 0;
 }
 .tags {
   margin-bottom: 15px;
@@ -117,9 +125,10 @@ export default {
   gap: 10px;
 }
 .price {
-  font-size: 24px;
+  font-size: 28px;
   color: #f56c6c;
   font-weight: bold;
+  text-shadow: 0 2px 8px rgba(245, 108, 108, 0.3);
 }
 .image-slot {
   display: flex;
@@ -127,15 +136,57 @@ export default {
   align-items: center;
   width: 100%;
   height: 100%;
-  background: #f5f7fa;
-  color: #909399;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
   font-size: 24px;
 }
 .usage-text {
-  line-height: 1.6;
-  color: #606266;
-  padding: 10px;
-  background: #f8f9fa;
-  border-radius: 4px;
+  line-height: 1.8;
+  color: var(--text-regular);
+  padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(64, 158, 255, 0.05), rgba(25, 198, 210, 0.03));
+  border-radius: 8px;
+  border-left: 3px solid rgba(64, 158, 255, 0.4);
+  margin-top: 8px;
+}
+
+/* 深色主题适配 */
+::v-deep .dark-theme .el-descriptions {
+  background-color: var(--card-bg) !important;
+}
+
+::v-deep .dark-theme .el-descriptions-item__label {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-regular) !important;
+}
+
+::v-deep .dark-theme .el-descriptions-item__content {
+  color: var(--text-primary) !important;
+}
+
+::v-deep .dark-theme .el-descriptions__body td {
+  border-color: var(--border-color) !important;
+  background-color: var(--card-bg) !important;
+}
+
+::v-deep .dark-theme .el-divider {
+  border-color: var(--border-color);
+}
+
+::v-deep .dark-theme .el-divider__text {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+}
+
+::v-deep .dark-theme .el-dialog {
+  background-color: var(--card-bg);
+}
+
+::v-deep .dark-theme .el-dialog__header {
+  border-bottom-color: var(--border-color);
+}
+
+::v-deep .dark-theme .el-dialog__title {
+  color: var(--text-primary);
 }
 </style>

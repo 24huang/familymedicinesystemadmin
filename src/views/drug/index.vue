@@ -6,7 +6,7 @@
       </div>
       <el-form :inline="true" :model="queryParams" size="small" class="filter-form">
         <el-form-item label="关键字">
-          <el-input v-model="queryParams.keyword" placeholder="药品名/条形码" clearable @keyup.enter.native="handleQuery" style="width: 200px;"></el-input>
+          <el-input v-model="queryParams.keyword" placeholder="药品名" clearable @keyup.enter.native="handleQuery" style="width: 200px;"></el-input>
         </el-form-item>
         <el-form-item label="药品分类">
           <el-select v-model="queryParams.categoryId" placeholder="请选择分类" clearable style="width: 150px;">
@@ -55,9 +55,10 @@
         @selection-change="handleSelectionChange"
         border
         stripe
+        :header-cell-style="{ background: 'rgba(15, 23, 42, 0.03)', fontWeight: '600' }"
       >
         <el-table-column type="selection" width="55" align="center"></el-table-column>
-        <el-table-column label="图片" width="100" align="center">
+        <el-table-column label="图片" width="100" align="center" resizable>
           <template slot-scope="scope">
             <el-image
               style="width: 60px; height: 60px; border-radius: 4px;"
@@ -71,30 +72,30 @@
             </el-image>
           </template>
         </el-table-column>
-        <el-table-column label="商品名" prop="tradeName" show-overflow-tooltip></el-table-column>
-        <el-table-column label="通用名" prop="name" show-overflow-tooltip></el-table-column>
-        <el-table-column label="规格" prop="spec" width="120" align="center"></el-table-column>
-        <el-table-column label="价格" prop="price" width="100" align="center">
+        <el-table-column label="商品名" prop="tradeName" min-width="120" show-overflow-tooltip resizable></el-table-column>
+        <el-table-column label="通用名" prop="name" min-width="140" show-overflow-tooltip resizable></el-table-column>
+        <el-table-column label="规格" prop="spec" width="120" align="center" resizable></el-table-column>
+        <el-table-column label="价格" prop="price" width="100" align="center" resizable>
           <template slot-scope="scope">
             <span class="price-tag">￥{{ scope.row.price }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="属性" width="100" align="center">
+        <el-table-column label="属性" width="100" align="center" resizable>
           <template slot-scope="scope">
             <el-tag :type="scope.row.categoryType === 0 ? 'danger' : 'success'" size="small">
               {{ scope.row.categoryType === 0 ? 'Rx' : 'OTC' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="状态" prop="status" width="100" align="center">
+        <el-table-column label="状态" prop="status" width="100" align="center" resizable>
           <template slot-scope="scope">
             <el-tag :type="getStatusType(scope.row.status)" size="small">
               {{ getStatusLabel(scope.row.status) }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="更新时间" prop="updateTime" width="160" align="center"></el-table-column>
-        <el-table-column label="操作" width="220" align="center" fixed="right">
+        <el-table-column label="更新时间" prop="updateTime" width="170" align="center" resizable></el-table-column>
+        <el-table-column label="操作" width="240" align="center" fixed="right" resizable>
           <template slot-scope="scope">
             <el-button type="text" icon="el-icon-view" @click="handleDetail(scope.row)">详情</el-button>
             <el-button type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
@@ -291,7 +292,7 @@ export default {
 .filter-title {
   font-size: 16px;
   font-weight: bold;
-  color: #303133;
+  color: var(--text-primary);
 }
 .filter-form {
   margin-top: 10px;
@@ -304,7 +305,7 @@ export default {
 .table-title {
   font-size: 16px;
   font-weight: bold;
-  color: #303133;
+  color: var(--text-primary);
 }
 .header-right {
   display: flex;
@@ -332,7 +333,7 @@ export default {
   width: 100%;
   height: 100%;
   background: #f5f7fa;
-  color: #909399;
+  color: var(--text-secondary);
   font-size: 20px;
 }
 </style>

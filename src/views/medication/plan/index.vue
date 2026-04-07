@@ -116,8 +116,11 @@
 </template>
 
 <script>
+// 导入用药计划相关API接口
 import { getPlanPage, deletePlan } from '@/api/medication'
+// 导入家庭成员API接口（用于显示成员姓名）
 import { getMemberPage } from '@/api/member'
+// 导入用药计划对话框组件（新增/编辑）
 import PlanDialog from './components/PlanDialog'
 
 export default {
@@ -125,25 +128,36 @@ export default {
   components: { PlanDialog },
   data() {
     return {
-      loading: false,
-      tableData: [],
-      total: 0,
-      memberList: [],
+      loading: false, // 表格加载状态
+      tableData: [], // 用药计划列表数据
+      total: 0, // 总记录数
+      memberList: [], // 家庭成员列表（用于显示姓名）
       queryParams: {
-        current: 1,
-        size: 10,
-        householdId: undefined,
-        memberId: undefined,
-        drugName: ''
+        current: 1, // 当前页码
+        size: 10, // 每页显示条数
+        householdId: undefined, // 户主ID筛选条件
+        memberId: undefined, // 成员ID筛选条件
+        drugName: '' // 药品名称筛选条件
       }
     }
   },
   created() {
+    // 页面创建时加载成员列表和计划列表
     this.loadMembers()
     this.getList()
   },
   methods: {
+    /**
+     * 解析用药计划的时间配置
+     * 支持两种格式：
+     * 1. 直接是数组: ["08:00", "12:00"]
+     * 2. JSON对象: {"times": ["08:00", "12:00"]}
+     * 3. JSON字符串: '{"times": [...]}' 或 '[...]'
+     * @param {Object} row - 计划行数据
+     * @returns {Array} 时间点数组
+     */
     parseTimes(row) {
+      // 如果已经是数组，直接返回
       if (row && Array.isArray(row.times)) {
         return row.times
       }
@@ -154,11 +168,13 @@ export default {
       const text = raw.trim()
       if (!text) return []
       try {
+        // 尝试解析JSON对象格式
         if (text.startsWith('{')) {
           const obj = JSON.parse(text)
           if (obj && Array.isArray(obj.times)) return obj.times
           return []
         }
+        // 尝试解析JSON数组格式
         if (text.startsWith('[')) {
           const arr = JSON.parse(text)
           return Array.isArray(arr) ? arr : []
@@ -168,19 +184,33 @@ export default {
       }
       return []
     },
+    /**
+     * 加载家庭成员列表
+     * 用于在表格中显示成员姓名而非ID
+     */
     loadMembers() {
       getMemberPage({ current: 1, size: 100 }).then(res => {
         this.memberList = res.data.records
       })
     },
+    /**
+     * 根据成员ID获取成员姓名
+     * @param {Number} id - 成员ID
+     * @returns {String|Number} 成员姓名，找不到则返回ID
+     */
     getMemberName(id) {
       const member = this.memberList.find(item => item.memberId === id)
       return member ? member.name : id
     },
+    /**
+     * 获取用药计划列表数据
+     * 调用API并解析时间配置
+     */
     getList() {
       this.loading = true
       getPlanPage(this.queryParams).then(res => {
         const records = (res.data && res.data.records) ? res.data.records : []
+        // 为每条记录解析时间配置
         this.tableData = records.map(item => ({
           ...item,
           times: this.parseTimes(item)
@@ -192,22 +222,42 @@ export default {
         this.loading = false
       })
     },
+    /**
+     * 执行查询操作
+     * 重置到第一页并重新加载数据
+     */
     handleQuery() {
       this.queryParams.current = 1
       this.getList()
     },
+    /**
+     * 重置查询条件
+     * 清空所有筛选条件并重新查询
+     */
     resetQuery() {
       this.queryParams.householdId = undefined
       this.queryParams.memberId = undefined
       this.queryParams.drugName = ''
       this.handleQuery()
     },
+    /**
+     * 打开新增用药计划对话框
+     */
     handleAdd() {
       this.$refs.planDialog.open('新增用药计划')
     },
+    /**
+     * 打开编辑用药计划对话框
+     * @param {Object} row - 要编辑的计划行数据
+     */
     handleUpdate(row) {
       this.$refs.planDialog.open('编辑用药计划', row)
     },
+    /**
+     * 删除用药计划
+     * 显示确认对话框，确认后调用删除API
+     * @param {Object} row - 要删除的计划行数据
+     */
     handleDelete(row) {
       this.$confirm('确认删除该用药计划?', '警告', {
         confirmButtonText: '确定',
@@ -220,14 +270,27 @@ export default {
         this.getList()
       }).catch(() => {})
     },
+    /**
+     * 处理每页显示条数变化
+     * @param {Number} val - 新的每页显示条数
+     */
     handleSizeChange(val) {
       this.queryParams.size = val
       this.getList()
     },
+    /**
+     * 处理页码变化
+     * @param {Number} val - 新的页码
+     */
     handleCurrentChange(val) {
       this.queryParams.current = val
       this.getList()
     },
+    /**
+     * 获取计划状态的标签类型
+     * @param {Number} status - 状态码（0-进行中，1-已完成，2-已停止）
+     * @returns {String} Element UI标签类型
+     */
     statusType(status) {
       const map = {
         0: 'success',
@@ -236,6 +299,11 @@ export default {
       }
       return map[status] || 'info'
     },
+    /**
+     * 获取计划状态的文本显示
+     * @param {Number} status - 状态码
+     * @returns {String} 状态文本
+     */
     statusText(status) {
       const map = {
         0: '进行中',

@@ -111,13 +111,16 @@
 </template>
 
 <script>
+// 导入首页统计数据接口
 import { getDashboardStats } from '@/api/dashboard'
 
 export default {
   name: 'Home',
   data() {
+    // 从本地存储获取用户信息，默认为空对象
     const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}')
     return {
+      // 统计卡片配置数组，每个卡片包含标签、数值、图标和颜色
       statCards: [
         { label: '库存药品', value: '-', icon: 'el-icon-box', color: '#409EFF' },
         { label: '家庭成员', value: '-', icon: 'el-icon-user', color: '#67C23A',roles:[1]},
@@ -125,21 +128,30 @@ export default {
         { label: '今日计划', value: '-', icon: 'el-icon-time', color: '#E6A23C' },
         { label: '缺货/过期', value: '-', icon: 'el-icon-warning', color: '#F56C6C' }
       ],
+      // 当前用户角色（0-管理员，1-户主，2-成员）
       userRole: userInfo.role || 0,
+      // 即将过期药品列表
       expiringDrugs: [],
+      // 每日健康贴士内容
       dailyTip: '加载中...',
+      // 今日用药活动时间线数据
       activities: [],
-      timePeriod: "" //存储当前时间段
+      timePeriod: "" //存储当前时间段（早上好/下午好/晚上好）
     }
   },
 
   mounted() {
-    // 页面加载完成后，执行时段判断
+    // 页面加载完成后，执行时段判断，显示对应问候语
     this.judgeTimePeriod()
-    // 获取后台数据
+    // 调用接口获取后台统计数据
     this.fetchData()
   },
   computed: {
+    /**
+     * 根据用户角色过滤显示的统计卡片
+     * - 如果卡片没有配置roles属性，则对所有角色显示
+     * - 如果配置了roles，则只有匹配的角色才能看到
+     */
     filteredCards() {
       return this.statCards.filter(card => {
         // 没配权限 → 显示
@@ -150,10 +162,15 @@ export default {
     }
   },
   methods: {
+    /**
+     * 获取首页统计数据
+     * 包括：库存药品数、用户数、今日计划数、过期药品数等
+     */
     fetchData() {
       getDashboardStats().then(res => {
         const data = res.data || {}
 
+        // 遍历统计卡片，根据标签更新对应的数值
         this.filteredCards.forEach(card => {
           switch (card.label) {
             case '库存药品':
@@ -174,7 +191,7 @@ export default {
           }
         })
 
-        // Update Expiring Drugs
+        // 更新即将过期药品列表，格式化显示数据
         this.expiringDrugs = (data.expiringDrugs || []).map(item => ({
             name: item.drugName,
             expireDate: item.expirationDate,
@@ -182,16 +199,17 @@ export default {
             status: item.daysUntilExpiration <= 0 ? '已过期' : '即将过期'
         }))
 
-        // Update Daily Tip
+        // 更新每日健康贴士
         this.dailyTip = data.dailyTip || '祝您健康每一天！'
 
-        // Update Activities
+        // 更新今日用药活动时间线
         this.activities = (data.activities || []).map(item => {
             let type = 'primary'
             let icon = 'el-icon-time'
             let color = '#409EFF'
             let statusText = '待服用'
 
+            // 根据用药状态设置不同的显示样式
             if (item.status === 1) {
                 type = 'success'
                 icon = 'el-icon-check'
@@ -204,7 +222,7 @@ export default {
                 statusText = '已跳过'
             }
 
-            // Format time HH:mm
+            // 格式化时间为 HH:mm 格式
             const time = item.scheduledTime ? item.scheduledTime.substring(11, 16) : ''
 
             return {
@@ -245,25 +263,25 @@ export default {
 }
 
 .welcome-section {
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--card-bg);
   padding: 20px 30px;
   border-radius: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-light);
 }
 
 .welcome-text h2 {
   font-size: 24px;
-  color: #303133;
+  color: var(--text-primary);
   margin-bottom: 10px;
 }
 
 .welcome-text p {
-  color: #909399;
+  color: var(--text-secondary);
 }
 
 .welcome-img {
@@ -296,12 +314,12 @@ export default {
 .stat-info .stat-value {
   font-size: 24px;
   font-weight: bold;
-  color: #303133;
+  color: var(--text-primary);
   margin-bottom: 5px;
 }
 
 .stat-info .stat-label {
-  color: #909399;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
@@ -399,5 +417,35 @@ export default {
 }
 .clearfix:after {
   clear: both
+}
+
+/* 深色主题适配 */
+.dark-theme .welcome-section {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+.dark-theme .welcome-text h2 {
+  color: var(--text-primary) !important;
+}
+
+.dark-theme .welcome-text p {
+  color: var(--text-secondary) !important;
+}
+
+.dark-theme .stat-info .stat-value {
+  color: var(--text-primary) !important;
+}
+
+.dark-theme .stat-info .stat-label {
+  color: var(--text-secondary) !important;
+}
+
+.dark-theme .quick-actions span {
+  color: var(--text-regular) !important;
+}
+
+.dark-theme .health-tip-container {
+  color: #ffffff !important;
 }
 </style>

@@ -142,38 +142,41 @@
 </template>
 
 <script>
+// 导入药品相关API接口
 import { getDrugDetail, addDrug, updateDrug,  uploadFile } from '@/api/drug'
+// 导入药品分类API接口
 import { getCategoryOptions } from '@/api/category'
 
 export default {
   name: 'DrugDialog',
   data() {
     return {
-      title: '',
-      visible: false,
-      loading: false,
-      isLoading: false,
-      categoryOptions: [],
+      title: '', // 对话框标题（新增/编辑）
+      visible: false, // 对话框显示状态
+      loading: false, // 提交按钮加载状态
+      isLoading: false, // 分类列表加载状态
+      categoryOptions: [], // 药品分类选项列表
       form: {
-        drugId: undefined, // 修改为 drugId
-        barCode: '', // 修改为 barCode
-        name: '',
-        tradeName: '',
-        categoryId: undefined,
-        categoryType: undefined,
-        usageType: undefined, // 新增 usageType
-        form: '', // 新增 form (剂型)
-        spec: '',
-        manufacturer: '',
-        approvalNumber: '',
-        price: 0,
-        stock: 0,
-        usageDosage: '',
-        description: '', // 新增 description
-        imageUrl: '',
-        instructionUrl: '', // 新增 instructionUrl
-        shelfLife: undefined // 新增 shelfLife
+        drugId: undefined, // 药品ID（编辑时使用）
+        barCode: '', // 条形码
+        name: '', // 通用名
+        tradeName: '', // 商品名
+        categoryId: undefined, // 分类ID
+        categoryType: undefined, // 处方类型（0-处方药，1-OTC）
+        usageType: undefined, // 用法类型（0-内服，1-外用）
+        form: '', // 剂型（如：胶囊、片剂）
+        spec: '', // 规格（如：0.25g*12片）
+        manufacturer: '', // 生产厂家
+        approvalNumber: '', // 批准文号
+        price: 0, // 价格
+        stock: 0, // 库存
+        usageDosage: '', // 用法用量
+        description: '', // 描述/适应症
+        imageUrl: '', // 药品图片URL
+        instructionUrl: '', // 说明书链接
+        shelfLife: undefined // 保质期（月）
       },
+      // 表单验证规则
       rules: {
         tradeName: [
           { required: true, message: '请输入商品名', trigger: 'blur' }
@@ -191,24 +194,30 @@ export default {
     }
   },
   methods: {
+    /**
+     * 打开对话框
+     * @param {String} title - 对话框标题
+     * @param {Number} id - 药品ID（编辑时传入，新增时为undefined）
+     */
     open(title, id) {
       this.title = title
       this.visible = true
       this.getCategoryList()
       this.reset()
+      // 如果有ID，则加载药品详情（编辑模式）
       if (id) {
         this.loadDetail(id)
       }
     },
-    // getCategoryList() {
-    //   getCategoryOptions().then(res => {
-    //     this.categoryOptions = res.data
-    //   })
-    // },
+    /**
+     * 获取药品分类列表
+     * 支持加载状态显示和错误处理
+     */
     getCategoryList() {
       this.isLoading = true;
       getCategoryOptions()
         .then(res => {
+          // 确保返回数据是数组格式
           this.categoryOptions = Array.isArray(res.data) ? res.data : [];
         })
         .catch(err => {
@@ -219,6 +228,10 @@ export default {
           this.isLoading = false;
         });
     },
+    /**
+     * 重置表单数据到初始状态
+     * 同时清除表单验证状态
+     */
     reset() {
       this.form = {
         drugId: undefined,
@@ -240,16 +253,21 @@ export default {
         imageUrl: '',
         instructionUrl: ''
       }
+      // 等待DOM更新后清除验证状态
       this.$nextTick(() => {
         if (this.$refs.form) {
           this.$refs.form.clearValidate()
         }
       })
     },
+    /**
+     * 加载药品详情数据（编辑模式）
+     * @param {Number} id - 药品ID
+     */
     loadDetail(id) {
       getDrugDetail(id).then(res => {
         const data = res.data
-        // 将后端数据映射到表单
+        // 将后端返回的数据映射到表单字段
         this.form = {
           drugId: data.drugId,
           barCode: data.barCode,
@@ -272,11 +290,19 @@ export default {
         }
       })
     },
+    /**
+     * 处理扫码识别功能
+     * TODO: 后续可接入真实的扫码API
+     */
     handleScan() {
       if (!this.form.barCode) return
       // TODO: 调用扫码接口，目前先模拟
       this.$message.info('扫码功能开发中，当前条码：' + this.form.barCode)
     },
+    /**
+     * 自定义图片上传方法
+     * @param {Object} param - 上传参数，包含file对象
+     */
     uploadImage(param) {
       const formData = new FormData()
       formData.append('file', param.file)
@@ -287,6 +313,12 @@ export default {
         this.$message.error('上传失败')
       })
     },
+    /**
+     * 图片上传前的校验
+     * 限制：仅支持JPG/PNG格式，大小不超过2MB
+     * @param {File} file - 待上传的文件对象
+     * @returns {Boolean} 是否允许上传
+     */
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
       const isLt2M = file.size / 1024 / 1024 < 2;
@@ -299,18 +331,24 @@ export default {
       }
       return isJPG && isLt2M;
     },
+    /**
+     * 提交表单数据
+     * 根据是否有drugId判断是新增还是编辑操作
+     */
     submitForm() {
       this.$refs.form.validate(valid => {
         if (valid) {
           this.loading = true
-          // 提交前的数据处理
+          // 提交前的数据处理（深拷贝避免影响原数据）
           const submitData = { ...this.form }
           
+          // 根据是否有drugId选择对应的API
           const request = this.form.drugId ? updateDrug : addDrug
           
           request(submitData).then(() => {
             this.$message.success(this.form.drugId ? '修改成功' : '新增成功')
             this.visible = false
+            // 通知父组件刷新列表
             this.$emit('refresh')
           }).finally(() => {
             this.loading = false

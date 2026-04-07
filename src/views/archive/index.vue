@@ -208,10 +208,17 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  background-color: #fff;
-  padding: 15px 20px;
-  border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  background: linear-gradient(135deg, var(--card-bg), var(--bg-secondary));
+  padding: 18px 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-lighter);
+  transition: all 0.3s ease;
+}
+
+.header-section:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
 }
 .overview-card {
   margin-bottom: 20px;
@@ -221,47 +228,61 @@ export default {
 }
 .info-item .label {
   font-size: 14px;
-  color: #909399;
+  color: var(--text-secondary);
   margin-bottom: 5px;
 }
 .info-item .value {
   font-size: 16px;
   font-weight: 500;
-  color: #303133;
+  color: var(--text-primary);
 }
 .health-condition {
   color: #E6A23C;
-  line-height: 1.5;
+  line-height: 1.6;
+  font-weight: 500;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, rgba(230, 162, 60, 0.08), rgba(230, 162, 60, 0.04));
+  border-radius: 6px;
+  border-left: 3px solid rgba(230, 162, 60, 0.5);
 }
 .stats-grid {
   display: flex;
   justify-content: space-around;
   margin-top: 20px;
-  background-color: #f5f7fa;
-  padding: 20px;
-  border-radius: 8px;
+  background: linear-gradient(135deg, var(--bg-secondary), var(--card-bg));
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid var(--border-lighter);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 .stat-item {
   text-align: center;
 }
 .stat-num {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
-  color: #409EFF;
+  color: var(--primary-color);
+  text-shadow: 0 2px 8px rgba(64, 158, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.stat-num:hover {
+  transform: scale(1.05);
 }
 .stat-num.highlight {
   color: #67C23A;
+  text-shadow: 0 2px 8px rgba(103, 194, 58, 0.2);
 }
 .stat-label {
   margin-top: 5px;
   font-size: 12px;
-  color: #909399;
+  color: var(--text-secondary);
 }
 .chart-title {
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 15px;
-  color: #606266;
+  color: var(--text-regular);
 }
 .drug-item {
   margin-bottom: 10px;
@@ -274,8 +295,24 @@ export default {
 .timeline-card {
   min-height: 400px;
 }
+
+.timeline-card .el-card__header {
+  background: linear-gradient(135deg, rgba(64, 158, 255, 0.06), rgba(25, 198, 210, 0.04));
+  border-bottom: 1px solid var(--border-lighter);
+}
 .image-list {
   margin-top: 10px;
+}
+
+.image-list .el-image {
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.image-list .el-image:hover {
+  transform: scale(1.05);
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(64, 158, 255, 0.3);
 }
 .timeline-image {
   width: 100px;
@@ -284,9 +321,38 @@ export default {
   border-radius: 4px;
 }
 .empty-text {
-  color: #909399;
+  color: var(--text-secondary);
   font-size: 13px;
   text-align: center;
   padding: 20px 0;
+}
+
+/* 深色主题特定优化 */
+.dark-theme .header-section {
+  background: linear-gradient(135deg, rgba(45, 45, 45, 0.8), rgba(31, 31, 31, 0.6));
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.dark-theme .stats-grid {
+  background: linear-gradient(135deg, rgba(31, 31, 31, 0.6), rgba(45, 45, 45, 0.4));
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.dark-theme .health-condition {
+  background: linear-gradient(135deg, rgba(230, 162, 60, 0.12), rgba(230, 162, 60, 0.06));
+  border-left-color: rgba(230, 162, 60, 0.6);
+}
+
+.dark-theme .stat-num {
+  text-shadow: 0 2px 12px rgba(64, 158, 255, 0.4);
+}
+
+.dark-theme .stat-num.highlight {
+  text-shadow: 0 2px 12px rgba(103, 194, 58, 0.4);
+}
+
+.dark-theme .timeline-card .el-card__header {
+  background: linear-gradient(135deg, rgba(64, 158, 255, 0.1), rgba(25, 198, 210, 0.06));
+  border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 </style>

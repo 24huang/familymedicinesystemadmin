@@ -162,6 +162,21 @@ body {
   font-weight: 600;
 }
 
+/* 深色主题下的表格表头栏 */
+.dark-theme .el-table th {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-lighter);
+}
+
+.dark-theme .el-table__header-wrapper {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark-theme .el-table__header {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
 .el-table--enable-row-hover .el-table__body tr:hover > td {
   background-color: rgba(45, 107, 255, 0.055) !important;
 }
@@ -285,5 +300,506 @@ body {
   .el-col-xs-24 {
     width: 100%;
   }
+}
+
+/* ==================== 深色主题适配 ==================== */
+
+/* 深色主题下的背景调整 */
+body.dark-theme {
+  background-color: var(--bg-color);
+}
+
+/* 深色主题下的表格表头 - 最高优先级 */
+body.dark-theme .el-table th.el-table__cell {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-lighter);
+}
+
+body.dark-theme .el-table__header-wrapper {
+  background-color: var(--card-bg) !important;
+}
+
+body.dark-theme .el-table__header {
+  background-color: var(--card-bg) !important;
+}
+
+body.dark-theme .el-table__header tr,
+body.dark-theme .el-table__header-wrapper tr {
+  background-color: var(--card-bg) !important;
+}
+
+body.dark-theme {
+  background-image:
+    radial-gradient(1200px 640px at 14% -12%, rgba(45, 107, 255, 0.08), transparent 60%),
+    radial-gradient(900px 540px at 92% 8%, rgba(25, 198, 210, 0.06), transparent 55%),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+/* 深色主题下的卡片样式 */
+.dark-theme .el-card {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* 深色主题下的卡片圆角 */
+.dark-theme .el-card.is-always-shadow,
+.dark-theme .el-card.is-hover-shadow {
+  box-shadow: var(--shadow-light) !important;
+}
+
+.dark-theme .el-card__header {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent);
+  border-bottom-color: var(--border-color) !important;
+}
+
+/* 深色主题下的表格 */
+.dark-theme .el-table {
+  border-color: var(--border-color);
+  background-color: var(--card-bg) !important;
+}
+
+/* 深色主题下的表格整体背景 */
+.dark-theme .el-table::before {
+  background-color: var(--card-bg);
+}
+
+/* 深色主题下的表格表头 */
+.dark-theme .el-table th.el-table__cell {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-lighter);
+}
+
+/* 深色主题下的表格表头包装器 */
+.dark-theme .el-table__header-wrapper {
+  background-color: var(--card-bg) !important;
+}
+
+.dark-theme .el-table__header {
+  background-color: var(--card-bg) !important;
+}
+
+/* 深色主题下的表格表头行 */
+.dark-theme .el-table__header tr,
+.dark-theme .el-table__header-wrapper tr {
+  background-color: var(--card-bg) !important;
+}
+
+/* 强制覆盖表格表头的内联样式 */
+.dark-theme table.el-table__header {
+  background-color: var(--card-bg) !important;
+}
+
+.dark-theme table.el-table__header thead {
+  background-color: var(--card-bg) !important;
+}
+
+.dark-theme table.el-table__header thead tr {
+  background-color: var(--card-bg) !important;
+}
+
+.dark-theme table.el-table__header thead tr th {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-theme .el-table td {
+  border-bottom-color: rgba(255, 255, 255, 0.15) !important;
+  color: var(--text-regular) !important;
+  background-color: var(--card-bg) !important;
+}
+
+/* 深色主题下的表格行悬停 */
+.dark-theme .el-table__body tr:hover > td {
+  background-color: rgba(64, 158, 255, 0.05) !important;
+}
+
+/* 深色主题下的表格选中行 */
+.dark-theme .el-table__body tr.current-row > td {
+  background-color: rgba(64, 158, 255, 0.12) !important;
+}
+
+/* 深色主题下的表格边框增强 */
+.dark-theme .el-table--border td,
+.dark-theme .el-table--border th {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.dark-theme .el-table::after,
+.dark-theme .el-table::before {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 深色主题下的表格边框竖线增强 */
+.dark-theme .el-table td.el-table__cell,
+.dark-theme .el-table th.el-table__cell.is-leaf {
+  border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+  border-right-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* 深色主题下的表格表头 */
+.dark-theme .el-table__header th {
+  color: var(--text-primary) !important;
+}
+
+/* 深色主题下的表格空数据 */
+.dark-theme .el-table__empty-text {
+  color: var(--text-secondary) !important;
+}
+
+.dark-theme .el-table--enable-row-hover .el-table__body tr:hover > td {
+  background-color: rgba(64, 158, 255, 0.08) !important;
+}
+
+/* 深色主题下的输入框 */
+.dark-theme .el-input__inner,
+.dark-theme .el-textarea__inner {
+  border-color: var(--border-color);
+  background-color: var(--bg-white);
+  color: var(--text-primary);
+}
+
+.dark-theme .el-input__inner::placeholder,
+.dark-theme .el-textarea__inner::placeholder {
+  color: var(--text-placeholder);
+}
+
+/* 深色主题下的表单标签 */
+.dark-theme .el-form-item__label {
+  color: var(--text-regular);
+}
+
+/* 深色主题下的对话框 */
+.dark-theme .el-dialog {
+  background-color: var(--card-bg);
+}
+
+.dark-theme .el-dialog__header {
+  border-bottom-color: var(--border-color);
+}
+
+.dark-theme .el-dialog__title {
+  color: var(--text-primary);
+}
+
+.dark-theme .el-dialog__body {
+  color: var(--text-regular);
+}
+
+.dark-theme .el-dialog__footer {
+  border-top-color: var(--border-color);
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* 深色主题下的下拉菜单 */
+.dark-theme .el-dropdown-menu {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+.dark-theme .el-dropdown-menu__item {
+  color: var(--text-regular);
+}
+
+.dark-theme .el-dropdown-menu__item:hover {
+  background-color: var(--hover-bg);
+  color: var(--primary-color);
+}
+
+/* 深色主题下的面包屑 */
+.dark-theme .el-breadcrumb__inner,
+.dark-theme .el-breadcrumb__inner a,
+.dark-theme .el-breadcrumb__separator {
+  color: var(--text-secondary);
+}
+
+.dark-theme .el-breadcrumb__inner a:hover {
+  color: var(--primary-color);
+}
+
+/* 深色主题下的分页 */
+.dark-theme .el-pagination {
+  color: var(--text-regular);
+}
+
+/* 分页按钮 */
+.dark-theme .el-pagination button {
+  color: var(--text-regular);
+  background-color: var(--bg-white);
+  border-color: var(--border-color);
+}
+
+.dark-theme .el-pagination button:hover {
+  color: var(--primary-color);
+}
+
+.dark-theme .el-pagination button:disabled {
+  color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* 分页数字按钮 */
+.dark-theme .el-pagination.is-background .el-pager li:not(.disabled) {
+  background-color: var(--bg-white);
+  color: var(--text-regular);
+  border-color: var(--border-color);
+}
+
+.dark-theme .el-pagination.is-background .el-pager li:not(.disabled):hover {
+  color: var(--primary-color);
+  background-color: var(--hover-bg);
+}
+
+.dark-theme .el-pagination.is-background .el-pager li:not(.disabled).active {
+  background-image: linear-gradient(135deg, var(--primary-color), #19c6d2);
+  color: #ffffff !important;
+  border-color: transparent;
+}
+
+/* 页码输入框 */
+.dark-theme .el-pagination .el-input__inner {
+  background-color: var(--bg-white);
+  border-color: var(--border-color);
+  color: var(--text-regular);
+}
+
+.dark-theme .el-pagination .el-input__inner:focus {
+  border-color: var(--primary-color);
+}
+
+/* 分页总数和跳转文字 */
+.dark-theme .el-pagination__total,
+.dark-theme .el-pagination__jump {
+  color: var(--text-secondary);
+}
+
+/* 深色主题下的标签 */
+.dark-theme .el-tag {
+  border-color: var(--border-color);
+}
+
+/* 深色主题下的按钮文本 */
+.dark-theme .el-button--text {
+  color: var(--primary-color);
+}
+
+/* ==================== 药品详情对话框深色适配 ==================== */
+
+/* 深色主题下的药品详情描述列表 */
+body.dark-theme .el-descriptions {
+  background-color: var(--card-bg) !important;
+}
+
+body.dark-theme .el-descriptions-item__label {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-regular) !important;
+}
+
+body.dark-theme .el-descriptions-item__content {
+  color: var(--text-primary) !important;
+}
+
+body.dark-theme .el-descriptions__body td {
+  border-color: var(--border-color) !important;
+  background-color: var(--card-bg) !important;
+}
+
+body.dark-theme .el-descriptions__body tr {
+  background-color: var(--card-bg) !important;
+}
+
+body.dark-theme .el-descriptions-item {
+  background-color: var(--card-bg) !important;
+}
+
+/* 深色主题下的分割线 */
+body.dark-theme .el-divider {
+  border-color: var(--border-color);
+}
+
+body.dark-theme .el-divider__text {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+}
+
+/* 深色主题下的对话框 */
+body.dark-theme .el-dialog {
+  background-color: var(--card-bg);
+}
+
+body.dark-theme .el-dialog__header {
+  border-bottom-color: var(--border-color);
+}
+
+body.dark-theme .el-dialog__title {
+  color: var(--text-primary);
+}
+
+/* 深色主题下的侧边栏 */
+.dark-theme .sidebar {
+  background-color: var(--sidebar-bg);
+}
+
+/* 深色主题下的头部 */
+.dark-theme .header {
+  background-color: var(--header-bg);
+  border-bottom-color: var(--border-color);
+}
+
+/* 深色主题下的滚动条 */
+.dark-theme ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.dark-theme ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ==================== Element UI 组件深色适配 ==================== */
+
+/* 深色主题下的时间线 */
+.dark-theme .el-timeline-item__content {
+  color: var(--text-regular) !important;
+}
+
+.dark-theme .el-timeline-item__timestamp {
+  color: var(--text-secondary) !important;
+}
+
+/* 深色主题下的卡片头部 */
+.dark-theme .el-card__header {
+  color: var(--text-primary) !important;
+}
+
+/* 深色主题下的快捷操作文字 */
+.dark-theme .quick-actions span {
+  color: var(--text-regular) !important;
+}
+
+/* 深色主题下的健康贴士容器 */
+.dark-theme .health-tip-container {
+  color: #ffffff !important;
+}
+
+.dark-theme .health-tip-container h3 {
+  color: #ffffff !important;
+}
+
+.dark-theme .health-tip-container p {
+  color: #f0f0f0 !important;
+}
+
+/* ==================== 健康档案页面深色适配 ==================== */
+
+/* 深色主题下的健康档案头部区域 */
+body.dark-theme .archive-container .header-section {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-lighter) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 深色主题下的统计网格 */
+body.dark-theme .stats-grid {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-lighter) !important;
+}
+
+/* 深色主题下的时间轴卡片 */
+body.dark-theme .timeline-card .el-card__body {
+  background-color: var(--card-bg) !important;
+}
+
+/* 深色主题下的时间轴项目内容 */
+body.dark-theme .el-timeline-item__content {
+  color: var(--text-regular) !important;
+}
+
+body.dark-theme .el-timeline-item__content h4 {
+  color: var(--text-primary) !important;
+}
+
+body.dark-theme .el-timeline-item__content p {
+  color: var(--text-secondary) !important;
+}
+
+/* 深色主题下的时间轴节点颜色增强 */
+body.dark-theme .el-timeline-item__node--primary {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+body.dark-theme .el-timeline-item__node--success {
+  background-color: var(--success-color) !important;
+  border-color: var(--success-color) !important;
+}
+
+/* 深色主题下的时间轴连接线 */
+body.dark-theme .el-timeline-item__tail {
+  border-left-color: var(--border-color) !important;
+}
+
+/* 深色主题下的进度条 */
+body.dark-theme .el-progress-bar__outer {
+  background-color: var(--bg-secondary) !important;
+}
+
+body.dark-theme .el-progress-bar__inner {
+  background-image: linear-gradient(90deg, var(--primary-color), #19c6d2) !important;
+}
+
+body.dark-theme .el-progress__text {
+  color: var(--text-regular) !important;
+}
+
+/* 深色主题下的图片预览 */
+body.dark-theme .el-image-viewer__wrapper {
+  background-color: rgba(0, 0, 0, 0.95) !important;
+}
+
+/* 深色主题下的空状态文字 */
+body.dark-theme .el-empty__description {
+  color: var(--text-secondary) !important;
+}
+
+/* 深色主题下的日期选择器 */
+body.dark-theme .el-date-editor.el-input,
+body.dark-theme .el-date-editor.el-input__inner {
+  background-color: var(--bg-white) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark-theme .el-date-editor .el-input__icon {
+  color: var(--text-secondary) !important;
+}
+
+/* ==================== el-page-header 深色适配 ==================== */
+
+/* 深色主题下的页头标题 */
+body.dark-theme .el-page-header__title {
+  color: var(--text-primary) !important;
+}
+
+/* 深色主题下的页头内容 */
+body.dark-theme .el-page-header__content {
+  color: var(--text-primary) !important;
+  font-weight: 500 !important;
+  font-size: 16px !important;
+}
+
+/* 深色主题下的页头返回按钮 */
+body.dark-theme .el-page-header__left {
+  color: var(--primary-color) !important;
+}
+
+body.dark-theme .el-page-header__left .el-icon {
+  color: var(--primary-color) !important;
+}
+
+/* 深色主题下的页头分隔线 */
+body.dark-theme .el-page-header__divider {
+  border-color: var(--border-color) !important;
 }
 </style>

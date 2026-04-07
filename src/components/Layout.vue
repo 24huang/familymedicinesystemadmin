@@ -81,6 +81,9 @@
         </div>
         
         <div class="header-right">
+          <!-- 主题切换 -->
+          <theme-toggle />
+          
           <!-- 用户头像和下拉菜单 -->
           <el-dropdown @command="handleCommand">
             <div class="user-info">
@@ -106,10 +109,16 @@
 </template>
 
 <script>
+// 导入退出登录API
 import { logout } from '@/api/auth'
+// 导入主题切换组件
+import ThemeToggle from '@/components/ThemeToggle.vue'
 
 export default {
   name: 'Layout',
+  components: {
+    ThemeToggle
+  },
   data() {
     return {
       isCollapse: false,
@@ -212,6 +221,12 @@ export default {
   flex-direction: column;
 }
 
+/* 深色主题下的侧边栏 */
+.dark-theme .sidebar {
+  background: var(--sidebar-bg);
+  box-shadow: 10px 0 28px rgba(0, 0, 0, 0.4);
+}
+
 .sidebar.collapsed {
   width: 64px;
 }
@@ -300,6 +315,13 @@ export default {
   border-bottom: 1px solid rgba(15, 23, 42, 0.08);
 }
 
+/* 深色主题下的头部 */
+.dark-theme .header {
+  background-color: var(--header-bg);
+  border-bottom-color: var(--border-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
 .header-left {
   display: flex;
   align-items: center;
@@ -341,11 +363,21 @@ export default {
   font-weight: 500;
 }
 
+/* 深色主题下的用户名 */
+.dark-theme .username {
+  color: var(--text-regular);
+}
+
 .content {
   flex: 1;
   padding: 24px;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+/* 深色主题下的内容区 */
+.dark-theme .content {
+  background-color: var(--bg-color);
 }
 
 /* 移除重复的 fade-transform 动画，已在 App.vue 全局定义 */
