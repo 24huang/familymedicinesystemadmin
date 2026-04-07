@@ -101,6 +101,9 @@ export default {
               // 明确标识为管理员角色
               localStorage.setItem('userRole', 'ADMIN') 
               
+              // 清除主题缓存，让每次登录都根据当前时间重新判断
+              localStorage.removeItem('theme')
+              
               // 获取用户信息并存储
               return getCurrentUser().then(userRes => {
                 const user = userRes.data
@@ -133,23 +136,87 @@ export default {
 </script>
 
 <style scoped>
+/* ==================== 登录页面强制浅色模式 ==================== */
+/* 登录页面不受深色主题影响，始终保持浅色 */
+
 .login-container {
   min-height: 100vh;
-  background-color: #f0f2f5;
+  background-color: #f0f2f5 !important;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23409eff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23409eff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") !important;
+  
+  /* 强制覆盖深色主题的背景色 */
+  --bg-color: #f6f8fc !important;
+  --bg-white: #ffffff !important;
+  --bg-secondary: #f5f7fa !important;
+  --text-primary: #0f172a !important;
+  --text-regular: #334155 !important;
+  --text-secondary: #64748b !important;
+  --card-bg: #ffffff !important;
+  --border-color: rgba(15, 23, 42, 0.12) !important;
+}
+
+/* 强制登录页面内部所有元素使用浅色主题 */
+.login-container * {
+  --bg-color: #f6f8fc !important;
+  --bg-white: #ffffff !important;
+  --bg-secondary: #f5f7fa !important;
+  --text-primary: #0f172a !important;
+  --text-regular: #334155 !important;
+  --text-secondary: #64748b !important;
+  --card-bg: #ffffff !important;
+  --border-color: rgba(15, 23, 42, 0.12) !important;
+}
+
+/* 覆盖深色主题的所有样式 */
+.login-container.dark-theme,
+.login-container .dark-theme {
+  --bg-color: #f6f8fc !important;
+  --bg-white: #ffffff !important;
+  --bg-secondary: #f5f7fa !important;
+  --text-primary: #0f172a !important;
+  --text-regular: #334155 !important;
+  --text-secondary: #64748b !important;
+  --card-bg: #ffffff !important;
+  --border-color: rgba(15, 23, 42, 0.12) !important;
+}
+
+/* 强制覆盖 Element UI 组件的深色样式 */
+.login-container .el-input__inner {
+  background-color: #ffffff !important;
+  border-color: #dcdfe6 !important;
+  color: #606266 !important;
+}
+
+.login-container .el-input__inner::placeholder {
+  color: #c0c4cc !important;
+}
+
+.login-container .el-button--primary {
+  background-color: #409eff !important;
+  border-color: #409eff !important;
+  color: #ffffff !important;
+}
+
+.login-container .el-card {
+  background-color: #ffffff !important;
+  border-color: #ebeef5 !important;
+}
+
+.login-container .el-form-item__label {
+  color: #606266 !important;
 }
 
 .login-content {
   display: flex;
   width: 900px;
   height: 520px;
-  background: white;
+  background: #ffffff !important;
   border-radius: 16px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1) !important;
   overflow: hidden;
 }
 
@@ -228,7 +295,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
+  background: #ffffff !important;
 }
 
 .login-form-box {
@@ -238,13 +305,13 @@ export default {
 
 .login-form-box h2 {
   font-size: 24px;
-  color: #303133;
+  color: #303133 !important;
   margin: 0 0 10px;
   text-align: center;
 }
 
 .login-tip {
-  color: #909399;
+  color: #909399 !important;
   font-size: 14px;
   margin-bottom: 30px;
   text-align: center;

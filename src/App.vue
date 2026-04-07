@@ -54,6 +54,91 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ==================== 登录/注册页面强制浅色模式（不受深色主题影响） ==================== */
+/* 当路由为登录页面时，强制使用浅色主题 */
+body:has(.login-container) {
+  --bg-color: #f6f8fc !important;
+  --bg-white: #ffffff !important;
+  --bg-secondary: #f5f7fa !important;
+  --text-primary: #0f172a !important;
+  --text-regular: #334155 !important;
+  --text-secondary: #64748b !important;
+  --text-main: #0f172a !important;
+  --card-bg: #ffffff !important;
+  --border-color: rgba(15, 23, 42, 0.12) !important;
+  --border-light: #e4e7ed !important;
+  --border-lighter: #ebeef5 !important;
+  --header-bg: #ffffff !important;
+  --sidebar-bg: #ffffff !important;
+}
+
+/* 登录页面内的所有元素强制浅色 */
+.login-container {
+  --bg-color: #f6f8fc !important;
+  --bg-white: #ffffff !important;
+  --bg-secondary: #f5f7fa !important;
+  --text-primary: #0f172a !important;
+  --text-regular: #334155 !important;
+  --text-secondary: #64748b !important;
+  --text-main: #0f172a !important;
+  --card-bg: #ffffff !important;
+  --border-color: rgba(15, 23, 42, 0.12) !important;
+  --border-light: #e4e7ed !important;
+  --border-lighter: #ebeef5 !important;
+}
+
+/* 覆盖深色主题类 */
+.login-container.dark-theme {
+  --bg-color: #f6f8fc !important;
+  --bg-white: #ffffff !important;
+  --bg-secondary: #f5f7fa !important;
+  --text-primary: #0f172a !important;
+  --text-regular: #334155 !important;
+  --text-secondary: #64748b !important;
+  --text-main: #0f172a !important;
+  --card-bg: #ffffff !important;
+  --border-color: rgba(15, 23, 42, 0.12) !important;
+  --border-light: #e4e7ed !important;
+  --border-lighter: #ebeef5 !important;
+}
+
+/* 登录页面内的 Element UI 组件强制浅色 */
+.login-container .el-input__inner,
+.login-container .el-textarea__inner {
+  background-color: #ffffff !important;
+  border-color: #dcdfe6 !important;
+  color: #606266 !important;
+}
+
+.login-container .el-input__inner::placeholder,
+.login-container .el-textarea__inner::placeholder {
+  color: #c0c4cc !important;
+}
+
+.login-container .el-button--primary {
+  background-color: #409eff !important;
+  border-color: #409eff !important;
+  color: #ffffff !important;
+}
+
+.login-container .el-card {
+  background-color: #ffffff !important;
+  border-color: #ebeef5 !important;
+}
+
+.login-container .el-form-item__label {
+  color: #606266 !important;
+}
+
+/* 登录页面背景色强制白色 */
+.login-container .login-content {
+  background-color: #ffffff !important;
+}
+
+.login-container .login-right {
+  background-color: #ffffff !important;
+}
+
 #app {
   height: 100vh;
 }

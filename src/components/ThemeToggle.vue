@@ -29,16 +29,37 @@ export default {
     /**
      * 初始化主题
      * 从 localStorage 读取保存的主题设置
+     * 如果用户从未手动选择过，则根据时间自动判断（晚上6点后使用深色模式）
      */
     initTheme() {
       const savedTheme = localStorage.getItem('theme')
+      
+      // 如果用户之前手动选择过主题，直接使用用户的偏好
       if (savedTheme === 'dark') {
         this.isDark = true
         this.applyTheme(true)
-      } else {
+      } else if (savedTheme === 'light') {
         this.isDark = false
         this.applyTheme(false)
+      } else {
+        // 用户从未选择过，根据当前时间自动判断
+        const isAutoDark = this.isNightTime()
+        this.isDark = isAutoDark
+        this.applyTheme(isAutoDark)
+        
+        // 保存到 localStorage（标记为自动设置的）
+        localStorage.setItem('theme', isAutoDark ? 'dark' : 'light')
       }
+    },
+    
+    /**
+     * 判断是否为夜间时间（晚上6点到早上6点）
+     * @returns {Boolean} - 是否为夜间
+     */
+    isNightTime() {
+      const currentHour = new Date().getHours()
+      // 晚上6点（18:00）到凌晨6点（6:00）之间为夜间
+      return currentHour >= 18 || currentHour < 6
     },
     
     /**
