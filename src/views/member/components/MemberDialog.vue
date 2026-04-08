@@ -11,12 +11,12 @@
         <el-col :span="24" style="text-align: center">
           <el-upload
             class="avatar-uploader"
-            action="/api/common/upload"
+            :action="uploadAction"
             :show-file-list="false"
             :headers="uploadHeaders"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload">
-            <img v-if="form.picture" :src="form.picture" class="avatar">
+            <img v-if="form.picture" :src="getImageUrl(form.picture)" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2MB</div>
           </el-upload>
@@ -109,6 +109,10 @@ export default {
       isAdmin: false,
       householdOptions: [],
       uploadHeaders: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+      // 上传地址：开发环境使用代理路径，生产环境使用完整URL
+      uploadAction: process.env.NODE_ENV === 'development' 
+        ? '/api/common/upload' 
+        : (process.env.VUE_APP_API_BASE || '/api') + '/common/upload',
       form: {
         memberId: undefined,
         householdId: undefined,
@@ -186,9 +190,26 @@ export default {
     handleAvatarSuccess(res) {
       if (res.code === 200) {
         this.form.picture = res.data
+        // 图片上传成功，使用完整URL显示
+        this.$message.success('图片上传成功')
       } else {
         this.$message.error(res.message || '上传图片失败')
       }
+    },
+    /**
+     * 获取图片完整URL
+     * @param {String} url - 图片路径
+     * @returns {String} 完整URL
+     */
+    getImageUrl(url) {
+      if (!url) return ''
+      // 如果已经是完整URL或base64，直接返回
+      if (url.startsWith('http') || url.startsWith('data:') || url.startsWith('blob:')) {
+        return url
+      }
+      // 后端返回的是相对路径（如 /files/xxx.jpg）
+      // 需要拼接后端地址，开发环境通过代理访问81端口
+      return 'http://localhost:81' + url
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'

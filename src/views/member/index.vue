@@ -41,8 +41,8 @@
           <template slot-scope="scope">
             <el-image
               style="width: 50px; height: 50px; border-radius: 50%"
-              :src="scope.row.picture"
-              :preview-src-list="scope.row.picture ? [scope.row.picture] : []">
+              :src="getImageUrl(scope.row.picture)"
+              :preview-src-list="scope.row.picture ? [getImageUrl(scope.row.picture)] : []">
               <div slot="error" class="image-slot">
                 <i class="el-icon-user-solid" style="font-size: 20px; line-height: 50px; color: #C0C4CC; background: #f5f7fa; width: 100%; height: 100%; display: block;"></i>
               </div>
@@ -175,6 +175,21 @@ export default {
     handleCurrentChange(val) {
       this.queryParams.current = val
       this.getList()
+    },
+    /**
+     * 获取图片完整URL
+     * @param {String} url - 图片路径
+     * @returns {String} 完整URL
+     */
+    getImageUrl(url) {
+      if (!url) return ''
+      // 如果已经是完整URL或base64，直接返回
+      if (url.startsWith('http') || url.startsWith('data:') || url.startsWith('blob:')) {
+        return url
+      }
+      // 后端返回的是相对路径（如 /files/xxx.jpg）
+      // 需要拼接后端地址，开发环境通过代理访问81端口
+      return 'http://localhost:81' + url
     },
     /**
      * 获取关系标签的中文显示

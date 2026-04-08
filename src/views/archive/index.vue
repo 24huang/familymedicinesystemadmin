@@ -13,7 +13,11 @@
       <el-row :gutter="20">
         <el-col :span="6">
           <div class="avatar-container">
-            <el-avatar :size="80" :src="overview.memberInfo.avatarUrl || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"></el-avatar>
+            <div class="avatar-wrapper">
+              <el-avatar :size="100" :src="getAvatarUrl(overview.memberInfo.avatarUrl)">
+                <i class="el-icon-user-solid"></i>
+              </el-avatar>
+            </div>
           </div>
           <div class="info-item">
             <div class="label">姓名</div>
@@ -90,8 +94,8 @@
               <el-image 
                 v-for="(img, imgIndex) in activity.images" 
                 :key="imgIndex"
-                :src="img" 
-                :preview-src-list="activity.images"
+                :src="getImageUrl(img)" 
+                :preview-src-list="activity.images.map(i => getImageUrl(i))"
                 class="timeline-image">
               </el-image>
             </div>
@@ -190,6 +194,39 @@ export default {
     },
     goBack() {
       this.$router.push('/member')
+    },
+    /**
+     * 获取头像完整URL
+     * @param {String} url - 头像路径
+     * @returns {String} 完整URL
+     */
+    getAvatarUrl(url) {
+      if (!url) {
+        // 默认头像
+        return 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+      }
+      // 如果已经是完整URL或base64，直接返回
+      if (url.startsWith('http') || url.startsWith('data:') || url.startsWith('blob:')) {
+        return url
+      }
+      // 后端返回的是相对路径（如 /files/xxx.jpg）
+      // 需要拼接后端地址，开发环境通过代理访问81端口
+      return 'http://localhost:81' + url
+    },
+    /**
+     * 获取图片完整URL
+     * @param {String} url - 图片路径
+     * @returns {String} 完整URL
+     */
+    getImageUrl(url) {
+      if (!url) return ''
+      // 如果已经是完整URL或base64，直接返回
+      if (url.startsWith('http') || url.startsWith('data:') || url.startsWith('blob:')) {
+        return url
+      }
+      // 后端返回的是相对路径（如 /files/xxx.jpg）
+      // 需要拼接后端地址，开发环境通过代理访问81端口
+      return 'http://localhost:81' + url
     }
   }
 }
@@ -202,6 +239,25 @@ export default {
 .avatar-container {
   text-align: center;
   margin-bottom: 20px;
+}
+
+.avatar-wrapper {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+}
+
+.avatar-wrapper /deep/ .el-avatar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-size: 50px;
+}
+
+.avatar-wrapper /deep/ .el-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 .header-section {
   display: flex;

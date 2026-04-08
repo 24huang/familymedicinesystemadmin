@@ -87,7 +87,9 @@
           <!-- 用户头像和下拉菜单 -->
           <el-dropdown @command="handleCommand">
             <div class="user-info">
-              <el-avatar :size="32" icon="el-icon-user-solid"></el-avatar>
+              <el-avatar :size="32" :src="getUserAvatar()">
+                <i class="el-icon-user-solid"></i>
+              </el-avatar>
               <span class="username">{{ userInfo.nickname || '管理员' }}</span>
               <i class="el-icon-arrow-down"></i>
             </div>
@@ -158,6 +160,25 @@ export default {
           console.error('解析用户信息失败', e)
         }
       }
+    },
+    /**
+     * 获取用户头像URL
+     * @returns {String} 头像URL，如果没有则返回空字符串
+     */
+    getUserAvatar() {
+      if (!this.userInfo.avatar) {
+        return ''
+      }
+      const avatar = this.userInfo.avatar
+      
+      // 如果已经是完整URL或base64，直接返回
+      if (avatar.startsWith('http') || avatar.startsWith('data:') || avatar.startsWith('blob:')) {
+        return avatar
+      }
+      
+      // 后端返回的是相对路径（如 /files/xxx.jpg）
+      // 需要拼接后端地址，开发环境通过代理访问81端口
+      return 'http://localhost:81' + avatar
     },
     toggleSidebar() {
       this.isCollapse = !this.isCollapse
