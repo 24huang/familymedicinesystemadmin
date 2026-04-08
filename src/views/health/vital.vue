@@ -2,8 +2,15 @@
   <div class="app-container">
     <el-card class="filter-container">
       <el-form :inline="true" :model="queryParams" size="small">
-        <el-form-item label="成员ID">
-          <el-input v-model="queryParams.memberId" placeholder="成员ID" clearable @keyup.enter.native="handleQuery" />
+        <el-form-item label="成员">
+          <el-select v-model="queryParams.memberId" placeholder="请选择成员" clearable filterable>
+            <el-option
+              v-for="member in memberList"
+              :key="member.memberId"
+              :label="member.name"
+              :value="member.memberId"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="类型">
           <el-select v-model="queryParams.type" placeholder="全部类型" clearable>
@@ -28,7 +35,7 @@
 
       <el-table v-loading="loading" :data="list" border stripe>
         <el-table-column label="ID" prop="id" width="80" align="center" />
-        <el-table-column label="成员ID" prop="memberId" width="100" align="center" />
+        <el-table-column label="成员姓名" prop="memberName" width="120" align="center" />
         <el-table-column label="类型" prop="type" width="100" align="center">
           <template slot-scope="scope">
             <el-tag>{{ getTypeName(scope.row.type) }}</el-tag>
@@ -80,6 +87,7 @@ export default {
       loading: false,
       list: [],
       total: 0,
+      memberList: [], // 成员列表（用于下拉选择）
       queryParams: {
         current: 1,
         size: 10,
@@ -96,9 +104,23 @@ export default {
     }
   },
   created() {
+    this.loadMemberList()
     this.getList()
   },
   methods: {
+    /**
+     * 加载成员列表（用于筛选下拉框）
+     */
+    loadMemberList() {
+      import('@/api/member').then(({ getMemberPage }) => {
+        getMemberPage({ current: 1, size: 1000 }).then(res => {
+          this.memberList = res.data.records || []
+        })
+      })
+    },
+    /**
+     * 获取体征数据列表
+     */
     getList() {
       this.loading = true
       getVitalPage(this.queryParams).then(res => {

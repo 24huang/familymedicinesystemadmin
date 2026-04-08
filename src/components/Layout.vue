@@ -38,6 +38,7 @@
             <span slot="title">健康数据管理</span>
           </template>
           <el-menu-item index="/health/vital-signs">体征数据监测</el-menu-item>
+          <el-menu-item index="/health/allergy">过敏信息管理</el-menu-item>
         </el-submenu>
         <el-submenu index="/medication">
           <template slot="title">
