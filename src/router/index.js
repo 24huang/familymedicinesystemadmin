@@ -157,14 +157,22 @@ router.beforeEach((to, from, next) => {
     return
   }
 
-  // 如果访问的不是登录页面，且没有token，则跳转到登录页
+  // 如果访问的不是登录页面，且没有token，则强制跳转到登录页
   if (to.path !== '/login' && !token) {
+    // 显示提示信息
+    import('element-ui').then(({ Message }) => {
+      Message({
+        message: '请先登录',
+        type: 'warning',
+        duration: 3 * 1000
+      })
+    })
     next('/login')
     return
   }
   
-  // 权限验证
-  if (to.meta.roles) {
+  // 权限验证（只有有token时才检查）
+  if (to.meta.roles && token) {
     const userInfoStr = localStorage.getItem('userInfo')
     if (userInfoStr) {
       try {
@@ -172,16 +180,27 @@ router.beforeEach((to, from, next) => {
         const userRole = userInfo.role
         // 检查用户角色是否在允许的角色列表中
         if (!to.meta.roles.includes(userRole)) {
-          // 无权限，跳转到首页
+          // 无权限，跳转到首页并提示
+          import('element-ui').then(({ Message }) => {
+            Message({
+              message: '您没有权限访问该页面',
+              type: 'error',
+              duration: 3 * 1000
+            })
+          })
           next('/home')
           return
         }
       } catch (e) {
         console.error('解析用户信息失败', e)
+        // 用户信息异常，清除所有数据并跳转登录
+        localStorage.clear()
         next('/login')
         return
       }
     } else {
+      // 有token但没有用户信息，可能是数据异常
+      localStorage.clear()
       next('/login')
       return
     }
