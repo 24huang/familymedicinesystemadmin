@@ -77,6 +77,12 @@ const routes = [
         name: 'VitalSigns',
         component: () => import('@/views/health/vital.vue'),
         meta: { title: '体征数据监测' }
+      },
+      {
+        path: 'allergy',
+        name: 'AllergyManagement',
+        component: () => import('@/views/allergy/index.vue'),
+        meta: { title: '过敏信息管理' }
       }
     ]
   },
