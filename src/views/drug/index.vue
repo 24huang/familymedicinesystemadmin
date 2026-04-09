@@ -62,8 +62,8 @@
           <template slot-scope="scope">
             <el-image
               style="width: 60px; height: 60px; border-radius: 4px;"
-              :src="scope.row.imageUrl"
-              :preview-src-list="[scope.row.imageUrl]"
+              :src="getFullImageUrl(scope.row.imageUrl)"
+              :preview-src-list="[getFullImageUrl(scope.row.imageUrl)]"
               fit="cover"
             >
               <div slot="error" class="image-slot">
@@ -171,6 +171,13 @@ export default {
     this.getList()
   },
   methods: {
+    getFullImageUrl(url) {
+      if (!url) return ''
+      if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+        return url
+      }
+      return 'http://localhost:81' + url
+    },
     getCategoryList() {
       getDrugCategoryOptions().then(res => {
         this.categoryOptions = res.data || []

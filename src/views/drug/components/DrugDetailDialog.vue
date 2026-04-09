@@ -9,8 +9,8 @@
       <div class="detail-header">
         <el-image
           class="detail-image"
-          :src="drug.imageUrl"
-          :preview-src-list="[drug.imageUrl]"
+          :src="getFullImageUrl(drug.imageUrl)"
+          :preview-src-list="[getFullImageUrl(drug.imageUrl)]"
         >
           <div slot="error" class="image-slot">
             <i class="el-icon-picture-outline"></i>
@@ -70,6 +70,13 @@ export default {
     }
   },
   methods: {
+    getFullImageUrl(url) {
+      if (!url) return ''
+      if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+        return url
+      }
+      return 'http://localhost:81' + url
+    },
     open(id) {
       this.visible = true
       this.loadDetail(id)

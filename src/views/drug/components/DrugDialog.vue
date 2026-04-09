@@ -121,7 +121,7 @@
               :show-file-list="false"
               :before-upload="beforeAvatarUpload"
             >
-              <img v-if="form.imageUrl" :src="form.imageUrl" class="avatar">
+              <img v-if="form.imageUrl" :src="getFullImageUrl(form.imageUrl)" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
@@ -194,6 +194,17 @@ export default {
     }
   },
   methods: {
+    /**
+     * 获取完整的图片URL
+     * @param {String} url - 图片URL
+     */
+    getFullImageUrl(url) {
+      if (!url) return ''
+      if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+        return url
+      }
+      return 'http://localhost:81' + url
+    },
     /**
      * 打开对话框
      * @param {String} title - 对话框标题
