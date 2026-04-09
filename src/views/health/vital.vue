@@ -19,6 +19,7 @@
             <el-option label="体温" :value="3" />
             <el-option label="心率" :value="4" />
             <el-option label="体重" :value="5" />
+            <el-option label="身高" :value="6" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -47,7 +48,11 @@
             {{ scope.row.value2 || '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="测量时间" prop="measureTime" width="160" align="center" />
+        <el-table-column label="测量时间" prop="measureTime" width="160" align="center">
+          <template slot-scope="scope">
+            {{ formatTime(scope.row.measureTime) }}
+          </template>
+        </el-table-column>
         <el-table-column label="备注" prop="remark" min-width="150" show-overflow-tooltip />
         <el-table-column label="操作" width="120" align="center" fixed="right">
           <template slot-scope="scope">
@@ -99,7 +104,8 @@ export default {
         2: '血糖',
         3: '体温',
         4: '心率',
-        5: '体重'
+        5: '体重',
+        6: '身高'
       }
     }
   },
@@ -164,6 +170,16 @@ export default {
     },
     getTypeName(type) {
       return this.typeMap[type] || '未知'
+    },
+    /**
+     * 格式化时间显示
+     * 将 "2026-04-09T22:50:00" 格式转换为 "2026-04-09 22:50:00"
+     * @param {String} timeStr - 时间字符串
+     * @returns {String} 格式化后的时间
+     */
+    formatTime(timeStr) {
+      if (!timeStr) return ''
+      return timeStr.replace('T', ' ')
     }
   }
 }
