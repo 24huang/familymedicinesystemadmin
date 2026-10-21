@@ -53,9 +53,9 @@
         </el-table-column>
         <el-table-column label="频次/时间" min-width="200" align="center">
           <template slot-scope="scope">
-            <div v-if="scope.row.frequencyType === 0">
-              <el-tag size="mini" type="info">每日</el-tag>
-              <div style="margin-top: 5px">
+            <div>
+              <el-tag size="mini" type="info">{{ ['每日', '隔日', '每周', '必要时'][scope.row.frequencyType] }}</el-tag>
+              <div v-if="scope.row.frequencyType !== 3" style="margin-top: 5px">
                 <el-tag 
                   v-for="(time, index) in scope.row.times" 
                   :key="index" 
@@ -65,9 +65,6 @@
                   {{ time }}
                 </el-tag>
               </div>
-            </div>
-            <div v-else>
-              <el-tag size="mini">间隔</el-tag>
             </div>
           </template>
         </el-table-column>

@@ -76,7 +76,7 @@ npm install
 
 ### 开发环境运行
 ```bash
-npm run serve
+npm run dev
 ```
 
 ### 生产环境构建
@@ -91,7 +91,7 @@ npm run lint
 
 ## 后端接口配置
 
-开发环境默认通过 devServer 代理转发到后端 `http://localhost:8080`（见 vue.config.js）。
+开发环境默认通过 devServer 代理转发到后端 `http://localhost:81`（见 vue.config.js）。
 
 如需修改，请编辑 [vue.config.js](file:///d:/code-project/my-project/familymedicinesystemadmin/vue.config.js) 中的 proxy 或 `src/api/request.js` 的 baseURL。
 
@@ -155,7 +155,7 @@ const service = axios.create({
 
 ### 开发环境
 ```bash
-npm run serve
+npm run dev
 ```
 访问地址：http://localhost:3000（如端口占用，Vue CLI 会自动递增）
 
@@ -190,3 +190,20 @@ MIT License
 ## 联系方式
 
 如有问题或建议，请联系开发团队。
+
+## 本轮非 AI 优化与验证
+
+- 复制 .env.example 为 .env.local，按需要设置代理、API 和文件地址；默认保持 /api 与81端口。
+- 生产环境需要将 /api 转发至后端，并代理 /files 等文件路径。文件跨域部署时设置 VUE_APP_FILE_BASE。
+- 登录失效仅清理认证数据，保留主题；并发401只提示和跳转一次。
+- 已提交 package-lock.json，后续安装使用 npm ci。
+- 隔离回归（Node 18+）：npm test；只检查不自动修复：npm run lint -- --no-fix；构建：npm run build。
+- Vue CLI 4 使用 Webpack 4，本机 Node 24 验证构建时需临时设置 NODE_OPTIONS=--openssl-legacy-provider；本轮没有迁移构建工具。
+
+## 用药计划完善
+
+- 计划表单支持每日、按开始日期隔日、每周选择星期、必要时四种频次；必要时不自动生成任务。
+- 支持设置和清空结束日期、停止和恢复计划。编辑只重排今天及未来待服记录，已确认记录和过往日期历史保留。
+- 兼容旧版时间点数组；旧每周计划没有星期数据时默认开始日期所在星期。
+- 需要配套发布新版后端；数据库升级和详细规则见后端 NON_AI_OPTIMIZATION.md。
+- npm test 包含计划表单及登录失效隔离回归；生产构建仍有原 vendor 包体积告警。

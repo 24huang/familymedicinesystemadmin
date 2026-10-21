@@ -1,3 +1,4 @@
+import { clearAuthState } from '@/utils/session'
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '@/components/Layout.vue'
@@ -200,13 +201,13 @@ router.beforeEach((to, from, next) => {
       } catch (e) {
         console.error('解析用户信息失败', e)
         // 用户信息异常，清除所有数据并跳转登录
-        localStorage.clear()
+        clearAuthState()
         next('/login')
         return
       }
     } else {
       // 有token但没有用户信息，可能是数据异常
-      localStorage.clear()
+      clearAuthState()
       next('/login')
       return
     }

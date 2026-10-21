@@ -112,6 +112,7 @@
 </template>
 
 <script>
+import { clearAuthState } from '@/utils/session'
 // 导入退出登录API
 import { logout } from '@/api/auth'
 // 导入主题切换组件
@@ -179,7 +180,7 @@ export default {
       
       // 后端返回的是相对路径（如 /files/xxx.jpg）
       // 需要拼接后端地址，开发环境通过代理访问81端口
-      return 'http://localhost:81' + avatar
+      return (process.env.VUE_APP_FILE_BASE || '').replace(/\/$/, '') + avatar
     },
     toggleSidebar() {
       this.isCollapse = !this.isCollapse
@@ -207,11 +208,7 @@ export default {
           })
           .finally(() => {
             // 清除所有用户信息
-            localStorage.removeItem('token')
-            localStorage.removeItem('userRole')
-            localStorage.removeItem('userId')
-            localStorage.removeItem('username')
-            localStorage.removeItem('userInfo')
+            clearAuthState()
             
             this.$router.replace('/login')
           })

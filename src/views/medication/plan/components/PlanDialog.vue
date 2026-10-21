@@ -69,11 +69,19 @@
       <el-form-item label="频次类型" prop="frequencyType">
         <el-radio-group v-model="form.frequencyType">
           <el-radio :label="0">每日</el-radio>
-          <!-- 暂时只支持每日，文档中 frequencyType: 0-每日 -->
+          <el-radio :label="1">隔日</el-radio>
+          <el-radio :label="2">每周</el-radio>
+          <el-radio :label="3">必要时</el-radio>
         </el-radio-group>
       </el-form-item>
 
-      <el-form-item label="服药时间" required>
+      <el-form-item v-if="form.frequencyType === 2" label="每周日期" required>
+        <el-checkbox-group v-model="form.weekDays">
+          <el-checkbox v-for="(day, index) in ['周一', '周二', '周三', '周四', '周五', '周六', '周日']" :key="index" :label="index + 1">{{ day }}</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item v-if="form.frequencyType === 3" label="排程说明">必要时使用，不自动生成服药任务。</el-form-item>
+      <el-form-item v-if="form.frequencyType !== 3" label="服药时间" required>
         <div v-for="(time, index) in form.times" :key="index" style="margin-bottom: 10px; display: flex; align-items: center;">
           <el-time-picker
             v-model="form.times[index]"
@@ -139,6 +147,7 @@ export default {
         startDate: '',
         endDate: '',
         frequencyType: 0,
+        weekDays: [],
         times: ['08:00'],
         dosage: '',
         totalQuantity: undefined,
@@ -154,31 +163,15 @@ export default {
     }
   },
   methods: {
-    parseTimes(row) {
-      if (row && Array.isArray(row.times)) {
-        return row.times
+    parseSchedule(row) {
+      let detail = {}
+      try { detail = JSON.parse(row.frequencyDetail || '{}') } catch (e) { detail = {} }
+      const times = Array.isArray(row.times) ? row.times : (Array.isArray(detail) ? detail : detail.times)
+      const fallbackDay = row.startDate ? (new Date(row.startDate.replace(/-/g, '/')).getDay() || 7) : 1
+      return {
+        times: Array.isArray(times) && times.length ? times : ['08:00'],
+        weekDays: Array.isArray(detail.weekDays) && detail.weekDays.length ? detail.weekDays.map(Number) : [fallbackDay]
       }
-      const raw = row && row.frequencyDetail
-      if (!raw || typeof raw !== 'string') {
-        return ['08:00']
-      }
-      const text = raw.trim()
-      if (!text) return ['08:00']
-      try {
-        if (text.startsWith('{')) {
-          const obj = JSON.parse(text)
-          if (obj && Array.isArray(obj.times) && obj.times.length > 0) return obj.times
-          return ['08:00']
-        }
-        if (text.startsWith('[')) {
-          const arr = JSON.parse(text)
-          if (Array.isArray(arr) && arr.length > 0) return arr
-          return ['08:00']
-        }
-      } catch (e) {
-        return ['08:00']
-      }
-      return ['08:00']
     },
     open(title, row) {
       this.title = title
@@ -187,6 +180,7 @@ export default {
       this.loadMembers()
       
       if (row) {
+        const schedule = this.parseSchedule(row)
         // 编辑模式
         this.form = {
           planId: row.planId,
@@ -196,7 +190,8 @@ export default {
           startDate: row.startDate,
           endDate: row.endDate,
           frequencyType: row.frequencyType,
-          times: this.parseTimes(row),
+          times: schedule.times,
+          weekDays: schedule.weekDays,
           dosage: row.dosage,
           totalQuantity: row.totalQuantity,
           remark: row.remark,
@@ -227,6 +222,7 @@ export default {
         startDate: '',
         endDate: '',
         frequencyType: 0,
+        weekDays: [],
         times: ['08:00'],
         dosage: '',
         totalQuantity: undefined,
@@ -269,15 +265,22 @@ export default {
     submitForm() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          if (!this.form.times || this.form.times.length === 0) {
+          if (this.form.frequencyType !== 3 && (!this.form.times || this.form.times.length === 0 || this.form.times.some(time => !time))) {
             this.$message.warning('请至少添加一个服药时间')
             return
           }
           
+          if (this.submitLoading) return
+          if (this.form.endDate && this.form.endDate < this.form.startDate) {
+            this.$message.warning('结束日期不能早于开始日期'); return
+          }
+          if (this.form.frequencyType === 2 && !this.form.weekDays.length) {
+            this.$message.warning('请至少选择一个星期'); return
+          }
           this.submitLoading = true
           const req = this.form.planId ? updatePlan : addPlan
           
-          req(this.form).then(() => {
+          req({ ...this.form, clearEndDate: !this.form.endDate, times: this.form.frequencyType === 3 ? [] : Array.from(new Set(this.form.times)).sort() }).then(() => {
             this.$message.success(this.form.planId ? '修改成功' : '新增成功')
             this.visible = false
             this.$emit('refresh')

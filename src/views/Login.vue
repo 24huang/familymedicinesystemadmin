@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import { clearAuthState } from '@/utils/session'
 import { adminLogin, getCurrentUser } from '@/api/auth'
 
 export default {
@@ -92,6 +93,7 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
+          clearAuthState()
           this.loading = true
           
           adminLogin(this.loginForm)
@@ -122,6 +124,7 @@ export default {
               })
             })
             .catch(error => {
+              clearAuthState()
               console.error('登录失败:', error)
               this.$message.error('登录失败，请检查用户名和密码')
             })

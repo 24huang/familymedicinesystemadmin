@@ -1,10 +1,12 @@
+const proxyTarget = process.env.VUE_APP_DEV_PROXY_TARGET || 'http://localhost:81'
+
 module.exports = {
   // 开发服务器配置
   devServer: {
     port: 3000, // 开发服务器端口
     proxy: {
       '/api': {
-        target: 'http://localhost:81', // 后端API地址
+        target: proxyTarget, // 后端API地址
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
@@ -12,15 +14,15 @@ module.exports = {
       },
       // 代理静态资源
       '/profile': {
-        target: 'http://localhost:81',
+        target: proxyTarget,
         changeOrigin: true
       },
       '/files': {
-        target: 'http://localhost:81',
+        target: proxyTarget,
         changeOrigin: true
       },
       '/common': {
-        target: 'http://localhost:81',
+        target: proxyTarget,
         changeOrigin: true
       }
     }
