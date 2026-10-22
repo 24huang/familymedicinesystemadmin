@@ -45,3 +45,18 @@ test('admin schedule parser retains legacy arrays and new weekly dates', () => {
   const weekly = page.parseSchedule({ frequencyDetail: '{"times":["09:00"],"weekDays":[2,6]}' })
   assert.equal(weekly.weekDays.join(','), '2,6')
 })
+
+test('admin deletion reports history retention from server instead of claiming physical removal', async () => {
+  const messages = [], confirmations = []
+  const context = vm.createContext({ PlanDialog: {}, deletePlan: async () => ({ message: '计划已停止，历史记录已保留' }) })
+  const source = fs.readFileSync(path.resolve(__dirname, '../src/views/medication/plan/index.vue'), 'utf8')
+    .split('<script>')[1].split('</script>')[0].replace(/^import .*$/gm, '').replace('export default', 'globalThis.definition =')
+  vm.runInContext(source, context)
+  let refreshes = 0
+  const page = { $confirm: message => { confirmations.push(message); return Promise.resolve() },
+    $message: { success: message => messages.push(message) }, getList: () => { refreshes++ } }
+  context.definition.methods.handleDelete.call(page, { planId: 1 })
+  await new Promise(resolve => setImmediate(resolve))
+  assert.ok(confirmations[0].includes('历史'))
+  assert.equal(messages[0], '计划已停止，历史记录已保留'); assert.equal(refreshes, 1)
+})

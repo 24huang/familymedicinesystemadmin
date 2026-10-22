@@ -256,14 +256,14 @@ export default {
      * @param {Object} row - 要删除的计划行数据
      */
     handleDelete(row) {
-      this.$confirm('确认删除该用药计划?', '警告', {
+      this.$confirm('有已服、已跳过或过往日期记录的计划将停止并保留历史，只取消今天及未来待服任务；没有历史的计划才会删除。确认继续？', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         return deletePlan(row.planId)
-      }).then(() => {
-        this.$message.success('删除成功')
+      }).then(res => {
+        this.$message.success(res.message || '处理成功')
         this.getList()
       }).catch(() => {})
     },
