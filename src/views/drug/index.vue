@@ -24,7 +24,7 @@
             <el-option label="OTC" :value="1"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item v-if="canManageDrugs" label="状态">
           <el-select v-model="queryParams.status" placeholder="请选择状态" clearable style="width: 120px;">
             <el-option label="待审核" :value="0"></el-option>
             <el-option label="已通过" :value="1"></el-option>
@@ -43,7 +43,7 @@
         <div class="header-left">
           <span class="table-title"><i class="el-icon-s-grid"></i> 药品列表</span>
         </div>
-        <div class="header-right">
+        <div v-if="canManageDrugs" class="header-right">
           <el-button type="primary" icon="el-icon-plus" size="small" @click="handleAdd">新增药品</el-button>
           <el-button type="danger" icon="el-icon-delete" size="small" :disabled="!multipleSelection.length" @click="handleBatchDelete">批量删除</el-button>
         </div>
@@ -57,7 +57,7 @@
         stripe
         :header-cell-style="{ background: 'rgba(15, 23, 42, 0.03)', fontWeight: '600' }"
       >
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
+        <el-table-column v-if="canManageDrugs" type="selection" width="55" align="center"></el-table-column>
         <el-table-column label="图片" width="100" align="center" resizable>
           <template slot-scope="scope">
             <el-image
@@ -98,15 +98,15 @@
         <el-table-column label="操作" width="240" align="center" fixed="right" resizable>
           <template slot-scope="scope">
             <el-button type="text" icon="el-icon-view" @click="handleDetail(scope.row)">详情</el-button>
-            <el-button type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
+            <el-button v-if="canManageDrugs" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
             <el-button
-              v-if="scope.row.status === 0"
+              v-if="canManageDrugs && scope.row.status === 0"
               type="text"
               icon="el-icon-check"
               class="success-text"
               @click="handleAudit(scope.row)"
             >审核</el-button>
-            <el-button type="text" icon="el-icon-delete" class="danger-text" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button v-if="canManageDrugs" type="text" icon="el-icon-delete" class="danger-text" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -169,6 +169,11 @@ export default {
   created() {
     this.getCategoryList()
     this.getList()
+  },
+  computed: {
+    canManageDrugs() {
+      try { return JSON.parse(localStorage.getItem('userInfo') || '{}').role === 0 } catch (e) { return false }
+    }
   },
   methods: {
     getFullImageUrl(url) {
