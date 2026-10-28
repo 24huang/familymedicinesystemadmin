@@ -79,3 +79,11 @@ export function uploadFile(data) {
     }
   })
 }
+
+// 管理端复用后端扫码查询，返回信息仅供填表，不自动保存或审核。
+export function scanDrug(barCode) {
+  return request({ url: '/admin/drug/scan', method: 'get', params: { barCode } })
+}
+export function uploadInstruction(data) {
+  return request({ url: '/admin/drug/instruction/upload', method: 'post', data, headers: { 'Content-Type': 'multipart/form-data' } })
+}

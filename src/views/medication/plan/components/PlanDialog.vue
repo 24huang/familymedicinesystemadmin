@@ -116,6 +116,8 @@
           <el-radio :label="2">已停止</el-radio>
         </el-radio-group>
       </el-form-item>
+      <el-form-item label="基础单位扣减"><el-switch v-model="measuredDose" /><span>{{measuredDose ? '仅扣已转换库存' : '仅扣旧库存'}}</span></el-form-item>
+      <el-form-item v-if="measuredDose" label="实际基础用量"><el-input v-model="form.doseQuantity" placeholder="最多3位小数" /><el-input v-model="form.doseUnit" placeholder="与所属家庭换算设置一致的单位" /></el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取 消</el-button>
@@ -135,7 +137,7 @@ export default {
     return {
       title: '',
       visible: false,
-      submitLoading: false,
+      submitLoading: false, measuredDose:false,
       memberList: [],
       drugList: [],
       drugLoading: false,
@@ -149,7 +151,7 @@ export default {
         frequencyType: 0,
         weekDays: [],
         times: ['08:00'],
-        dosage: '',
+        dosage: '',doseQuantity:'',doseUnit:'',
         totalQuantity: undefined,
         remark: '',
         status: 0
@@ -182,6 +184,7 @@ export default {
       if (row) {
         const schedule = this.parseSchedule(row)
         // 编辑模式
+        this.measuredDose=row.doseQuantity != null
         this.form = {
           planId: row.planId,
           memberId: row.memberId,
@@ -192,7 +195,7 @@ export default {
           frequencyType: row.frequencyType,
           times: schedule.times,
           weekDays: schedule.weekDays,
-          dosage: row.dosage,
+          dosage: row.dosage,doseQuantity:row.doseQuantity || '',doseUnit:row.doseUnit || '',
           totalQuantity: row.totalQuantity,
           remark: row.remark,
           status: row.status
@@ -214,6 +217,7 @@ export default {
       this.reset()
     },
     reset() {
+      this.measuredDose=false
       this.form = {
         planId: undefined,
         memberId: undefined,
@@ -224,7 +228,7 @@ export default {
         frequencyType: 0,
         weekDays: [],
         times: ['08:00'],
-        dosage: '',
+        dosage: '',doseQuantity:'',doseUnit:'',
         totalQuantity: undefined,
         remark: '',
         status: 0
@@ -280,7 +284,7 @@ export default {
           this.submitLoading = true
           const req = this.form.planId ? updatePlan : addPlan
           
-          req({ ...this.form, clearEndDate: !this.form.endDate, times: this.form.frequencyType === 3 ? [] : Array.from(new Set(this.form.times)).sort() }).then(() => {
+          req({ ...this.form, doseQuantity:this.measuredDose?this.form.doseQuantity:undefined,doseUnit:this.measuredDose?this.form.doseUnit:undefined,clearMeasuredDose:!this.measuredDose, clearEndDate: !this.form.endDate, times: this.form.frequencyType === 3 ? [] : Array.from(new Set(this.form.times)).sort() }).then(() => {
             this.$message.success(this.form.planId ? '修改成功' : '新增成功')
             this.visible = false
             this.$emit('refresh')

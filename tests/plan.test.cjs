@@ -20,6 +20,13 @@ function dialog() {
   return { page, saved, warnings }
 }
 
+test('admin editor restores measured dose instead of silently reverting to legacy inventory',()=>{
+  const {page}=dialog()
+  page.loadMembers=()=>{};page.reset=()=>{}
+  page.open('编辑',{planId:1,doseQuantity:'0.5',doseUnit:'片',frequencyDetail:'["08:00"]',startDate:'2026-01-01'})
+  assert.equal(page.measuredDose,true);assert.equal(page.form.doseQuantity,'0.5');assert.equal(page.form.doseUnit,'片')
+})
+
 test('as-needed admin plan saves without a scheduled time', async () => {
   const { page, saved } = dialog()
   Object.assign(page.form, { frequencyType: 3, times: [], startDate: '2026-10-21' })

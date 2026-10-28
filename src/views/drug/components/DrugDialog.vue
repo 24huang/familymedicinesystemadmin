@@ -1,5 +1,5 @@
 <template>
-  <el-dialog
+  <el-dialog @close="formVersion++; scanning=false; instructionUploading=false"
     :title="title"
     :visible.sync="visible"
     width="800px"
@@ -129,21 +129,25 @@
         <el-col :span="12">
           <el-form-item label="说明书" prop="instructionUrl">
             <el-input v-model="form.instructionUrl" placeholder="请输入说明书链接或上传"></el-input>
-            <!-- 暂未实现说明书上传，预留位置 -->
+            <el-upload action="#" accept=".jpg,.jpeg,.png,.pdf" :http-request="uploadDrugInstruction" :show-file-list="false" :before-upload="beforeInstructionUpload" :disabled="instructionUploading">
+              <el-button size="small" :loading="instructionUploading">上传图片/PDF说明书</el-button>
+            </el-upload>
+            <el-link v-if="form.instructionUrl && !form.instructionUrl.startsWith('data:')" :href="getFullImageUrl(form.instructionUrl)" target="_blank" rel="noopener noreferrer">查看说明书</el-link>
+            <div>支持JPEG、PNG、PDF，最大10MB；上传后保存药品才会关联。</div>
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取 消</el-button>
-      <el-button type="primary" @click="submitForm" :loading="loading">确 定</el-button>
+      <el-button type="primary" @click="submitForm" :loading="loading" :disabled="instructionUploading || scanning">确 定</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
 // 导入药品相关API接口
-import { getDrugDetail, addDrug, updateDrug,  uploadFile } from '@/api/drug'
+import { getDrugDetail, addDrug, updateDrug,  uploadFile, scanDrug, uploadInstruction } from '@/api/drug'
 // 导入药品分类API接口
 import { getCategoryOptions } from '@/api/category'
 
@@ -151,6 +155,7 @@ export default {
   name: 'DrugDialog',
   data() {
     return {
+      formVersion: 0, scanning: false, instructionUploading: false,
       title: '', // 对话框标题（新增/编辑）
       visible: false, // 对话框显示状态
       loading: false, // 提交按钮加载状态
@@ -203,7 +208,7 @@ export default {
       if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
         return url
       }
-      return 'http://localhost:81' + url
+      return (process.env.VUE_APP_API_BASE || '/api').replace(/\/$/, '') + url
     },
     /**
      * 打开对话框
@@ -244,6 +249,7 @@ export default {
      * 同时清除表单验证状态
      */
     reset() {
+      this.formVersion++; this.scanning=false; this.instructionUploading=false
       this.form = {
         drugId: undefined,
         barCode: '',
@@ -301,14 +307,40 @@ export default {
         }
       })
     },
-    /**
-     * 处理扫码识别功能
-     * TODO: 后续可接入真实的扫码API
-     */
-    handleScan() {
-      if (!this.form.barCode) return
-      // TODO: 调用扫码接口，目前先模拟
-      this.$message.info('扫码功能开发中，当前条码：' + this.form.barCode)
+    // 只补齐仍为空的字段；不改变编辑中的药品ID，也不覆盖用户输入。
+    async handleScan() {
+      if (this.scanning) return
+      const barCode=this.form.barCode, version=this.formVersion, token=localStorage.getItem('token')
+      if (!/^[0-9]{8,20}$/.test(barCode || '')) return this.$message.warning('请输入8至20位数字条码')
+      this.scanning=true
+      try {
+        const res=await scanDrug(barCode)
+        if (!this.visible || version!==this.formVersion || barCode!==this.form.barCode || token!==localStorage.getItem('token')) return
+        const data=res.data || {}
+        if (!data.name) return this.$message.info('未查到药品信息，请手动完善')
+        const fields=['name','tradeName','categoryId','categoryType','usageType','form','spec','manufacturer','approvalNumber','usageDosage','description','imageUrl','instructionUrl','shelfLife']
+        fields.forEach(field=>{if ((this.form[field] === '' || this.form[field] == null) && data[field] != null) this.$set(this.form,field,data[field])})
+        this.$message.success('查询完成，仅补充空白信息，请核对后保存')
+      } finally { if(version===this.formVersion)this.scanning=false }
+    },
+    beforeInstructionUpload(file) {
+      const valid=/\.(pdf|jpe?g|png)$/i.test(file.name) && file.size > 0 && file.size <= 10*1024*1024
+      if (!valid) this.$message.error('请选择10MB以内的JPEG、PNG或PDF')
+      return valid
+    },
+    async uploadDrugInstruction(param) {
+      if (this.instructionUploading) return
+      const version=this.formVersion, token=localStorage.getItem('token'), previous=this.form.instructionUrl
+      this.instructionUploading=true
+      try {
+        const data=new FormData();data.append('file',param.file)
+        const res=await uploadInstruction(data)
+        if (!this.visible || version!==this.formVersion || token!==localStorage.getItem('token')) return
+        if (this.form.instructionUrl === previous) this.form.instructionUrl=res.data
+        if (param.onSuccess) param.onSuccess(res)
+        this.$message.success('说明书已上传，请保存药品')
+      } catch(e) { if(param.onError)param.onError(e) }
+      finally { if(version===this.formVersion)this.instructionUploading=false }
     },
     /**
      * 自定义图片上传方法
