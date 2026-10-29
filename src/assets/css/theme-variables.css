@@ -1,79 +1,28 @@
-/* 主题变量定义 */
-
-/* 浅色主题（默认） */
 :root {
-  /* 背景色 */
-  --bg-color: #f5f7fa;
-  --bg-white: #ffffff;
-  --bg-secondary: #fafafa;
-  
-  /* 文字颜色 */
-  --text-primary: #303133;
-  --text-regular: #606266;
-  --text-secondary: #909399;
-  --text-placeholder: #c0c4cc;
-  
-  /* 边框颜色 */
-  --border-color: #dcdfe6;
-  --border-light: #e4e7ed;
-  --border-lighter: #ebeef5;
-  
-  /* 卡片和容器 */
-  --card-bg: #ffffff;
-  --header-bg: #ffffff;
-  --sidebar-bg: #304156;
-  
-  /* 品牌色 */
-  --primary-color: #409eff;
-  --success-color: #67c23a;
-  --warning-color: #e6a23c;
-  --danger-color: #f56c6c;
-  --info-color: #909399;
-  
-  /* 悬停和激活状态 */
-  --hover-bg: #f5f7fa;
-  --active-bg: #ecf5ff;
-  
-  /* 阴影 */
-  --shadow-light: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  --shadow-dark: 0 2px 8px 0 rgba(0, 0, 0, 0.15);
+  color-scheme: light;
+  --bg-color:#f4f6f9; --bg-white:#fff; --bg-secondary:#f7f9fc;
+  --text-primary:#17243b; --text-main:#17243b; --text-regular:#46566e;
+  --text-secondary:#5f7087; --text-placeholder:#8795a9;
+  --border-color:#e3e9f1; --border-light:#eaf0f6; --border-lighter:#f0f4f8;
+  --card-bg:#fff; --header-bg:#fff; --sidebar-bg:#fff;
+  --primary-color:#3268da; --success-color:#24846a; --warning-color:#97601c;
+  --danger-color:#b8404e; --info-color:#708198;
+  --hover-bg:#f2f6fc; --active-bg:#eaf1ff;
+  --surface-0:#fff; --surface-1:#f7f9fc; --surface-solid:#fff;
+  --shadow-light:0 4px 20px rgba(28,47,80,.035); --shadow-dark:0 8px 24px rgba(28,47,80,.07);
+  --shadow-1:var(--shadow-light); --shadow-2:var(--shadow-dark);
+  --radius-10:9px; --radius-14:13px; --radius-16:16px;
 }
-
-/* 深色主题 */
 .dark-theme {
-  /* 背景色 */
-  --bg-color: #1a1a1a;
-  --bg-white: #252525;
-  --bg-secondary: #1f1f1f;
-  
-  /* 文字颜色 - 提高亮度，增强可读性 */
-  --text-primary: #f5f5f5;      /* 主要文字 - 接近白色 */
-  --text-regular: #d0d0d0;      /* 常规文字 - 明亮灰色 */
-  --text-secondary: #a0a0a0;    /* 次要文字 - 中等灰色 */
-  --text-placeholder: #808080;  /* 占位文字 - 较亮灰色 */
-  
-  /* 边框颜色 */
-  --border-color: #4a4a4a;
-  --border-light: #3a3a3a;
-  --border-lighter: #333333;
-  
-  /* 卡片和容器 */
-  --card-bg: #2d2d2d;
-  --header-bg: #252525;
-  --sidebar-bg: #1e1e1e;
-  
-  /* 品牌色（保持或微调） */
-  --primary-color: #409eff;
-  --success-color: #67c23a;
-  --warning-color: #e6a23c;
-  --danger-color: #f56c6c;
-  --info-color: #909399;
-  
-  /* 悬停和激活状态 */
-  --hover-bg: #3a3a3a;
-  --active-bg: #2a3a4a;
-  
-  /* 阴影 */
-  --shadow-light: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
-  --shadow-dark: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
+  color-scheme:dark;
+  --bg-color:#101824; --bg-white:#192333; --bg-secondary:#202d40;
+  --text-primary:#edf3ff; --text-main:#edf3ff; --text-regular:#c4d0e3;
+  --text-secondary:#93a5bf; --text-placeholder:#8393a9;
+  --border-color:#2b3b50; --border-light:#26354a; --border-lighter:#223045;
+  --card-bg:#192333; --header-bg:#151f2d; --sidebar-bg:#151f2d;
+  --primary-color:#86aaff; --success-color:#71c6ae; --warning-color:#e8b96e;
+  --danger-color:#f19aa3; --info-color:#93a5bf;
+  --hover-bg:#223249; --active-bg:#283e62;
+  --surface-0:#192333; --surface-1:#202d40; --surface-solid:#192333;
+  --shadow-light:0 4px 20px rgba(0,0,0,.08); --shadow-dark:0 8px 24px rgba(0,0,0,.16);
 }

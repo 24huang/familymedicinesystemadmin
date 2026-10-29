@@ -4,7 +4,7 @@
     <div class="sidebar" :class="{ collapsed: isCollapse }">
       <div class="logo">
         <img src="@/assets/logo.svg" alt="logo" class="logo-img">
-        <span v-if="!isCollapse" class="logo-text">家庭药品管理</span>
+        <span v-if="!isCollapse" class="logo-text">伐木累药<small>家庭照护工作台</small></span>
       </div>
       
       <el-menu
@@ -12,8 +12,8 @@
         class="sidebar-menu"
         :collapse="isCollapse"
         background-color="transparent"
-        text-color="#bfcbd9"
-        active-text-color="#409EFF"
+        text-color="var(--text-secondary)"
+        active-text-color="var(--primary-color)"
         router
       >
         <el-menu-item index="/home">
@@ -74,10 +74,12 @@
           <el-button
             type="text"
             icon="el-icon-s-fold"
+            :aria-label="isCollapse ? '展开导航' : '收起导航'"
             @click="toggleSidebar"
           />
           <el-breadcrumb separator="/">
-            <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/home' }">工作台</el-breadcrumb-item>
+            <el-breadcrumb-item v-if="$route.path !== '/home'">{{ currentPageTitle }}</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
         
@@ -134,6 +136,9 @@ export default {
     }
   },
   computed: {
+    currentPageTitle() {
+      return this.$route.meta.title || '页面详情'
+    },
     activeMenu() {
       return this.$route.path
     },
@@ -221,183 +226,34 @@ export default {
 </script>
 
 <style scoped>
-.layout-container {
-  height: 100vh;
-  display: flex;
-}
+.layout-container { height:100vh; display:flex; overflow:hidden; }
+.sidebar { width:232px; flex-shrink:0; display:flex; flex-direction:column; background:var(--sidebar-bg); border-right:1px solid var(--border-color); transition:width var(--motion-base) var(--motion-ease); overflow:hidden; z-index:1001; }
+.sidebar.collapsed { width:72px; }
+.logo { min-height:94px; display:flex; align-items:center; padding:22px; gap:12px; }
+.logo-img { width:34px; height:34px; flex-shrink:0; }
+.logo-text { font-size:18px; font-weight:750; letter-spacing:.5px; color:var(--text-primary); white-space:nowrap; }
+.logo-text small { display:block; font-size:10px; letter-spacing:1px; font-weight:400; color:var(--text-secondary); margin-top:3px; }
+.sidebar.collapsed .logo { justify-content:center; padding:22px 0; }
+.sidebar-menu { flex:1; overflow-y:auto; border:0; padding:0 10px 22px; }
+::v-deep .el-menu { border:0; background:transparent; }
+::v-deep .el-menu-item,::v-deep .el-submenu__title { height:46px; line-height:46px; margin:4px 0; border-radius:8px; font-size:13px; }
+::v-deep .el-menu-item i,::v-deep .el-submenu__title i { color:var(--text-secondary); font-size:18px; }
+::v-deep .el-menu-item.is-active { color:var(--primary-color)!important; background:var(--active-bg)!important; font-weight:650; }
+::v-deep .el-menu-item.is-active i { color:var(--primary-color); }
+::v-deep .el-menu-item:hover,::v-deep .el-submenu__title:hover { background:var(--hover-bg)!important; }
+::v-deep .el-submenu .el-menu-item { min-width:0; height:40px; line-height:40px; font-size:12px; }
+.main-container { flex:1; min-width:0; display:flex; flex-direction:column; }
+.header { height:70px; min-height:70px; background:var(--header-bg); border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; padding:0 30px; }
+.header-left,.header-right { display:flex; align-items:center; gap:16px; min-width:0; }
+.header-left .el-button { font-size:18px; color:var(--text-secondary); }
+::v-deep .el-breadcrumb { font-size:12px; }
+::v-deep .el-breadcrumb__inner,::v-deep .el-breadcrumb__inner a { color:var(--text-secondary); font-weight:400; }
+::v-deep .el-breadcrumb__item:last-child .el-breadcrumb__inner { color:var(--text-primary); font-weight:550; }
+.user-info { display:flex; align-items:center; gap:9px; color:var(--text-regular); cursor:pointer; font-size:12px; padding:5px 8px; border-radius:8px; }
+.user-info:hover { background:var(--hover-bg); }
+.username { max-width:140px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.content { flex:1; min-height:0; padding:30px; overflow:auto; background:var(--bg-color); }
+@media(max-width:1100px){.sidebar{width:205px}.content{padding:20px}.header{padding:0 20px}.logo{padding:20px 17px}}
+@media(max-width:760px){.sidebar:not(.collapsed){width:185px}.content{padding:14px}.header{padding:0 12px}.header-left,.header-right{gap:8px}.username{display:none}}
 
-.sidebar {
-  width: 240px;
-  background:
-    radial-gradient(900px 520px at 10% -20%, rgba(45, 107, 255, 0.35), transparent 55%),
-    linear-gradient(180deg, #06162f 0%, #0b2a57 100%);
-  background-size: auto, auto;
-  box-shadow: 10px 0 28px rgba(2, 6, 23, 0.28);
-  transition: width 0.3s;
-  overflow: hidden;
-  z-index: 1001;
-  display: flex;
-  flex-direction: column;
-}
-
-/* 深色主题下的侧边栏 */
-.dark-theme .sidebar {
-  background: var(--sidebar-bg);
-  box-shadow: 10px 0 28px rgba(0, 0, 0, 0.4);
-}
-
-.sidebar.collapsed {
-  width: 64px;
-}
-
-.logo {
-  height: 64px;
-  display: flex;
-  align-items: center;
-  padding-left: 20px;
-  background-color: transparent; /* 透明背景以显示 sidebar 渐变 */
-  color: white;
-  overflow: hidden;
-  transition: all 0.3s;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.sidebar.collapsed .logo {
-  padding-left: 0;
-  justify-content: center;
-}
-
-.logo-img {
-  width: 32px;
-  height: 32px;
-  margin-right: 12px;
-  filter: drop-shadow(0 0 4px rgba(255,255,255,0.3));
-}
-
-.sidebar.collapsed .logo-img {
-  margin-right: 0;
-}
-
-.logo-text {
-  font-size: 18px;
-  font-weight: 600;
-  white-space: nowrap;
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  letter-spacing: 1px;
-}
-
-.sidebar-menu {
-  border: none;
-  flex: 1;
-  overflow-y: auto;
-}
-
-/* 覆盖菜单样式 */
-::v-deep .el-menu {
-  border-right: none;
-}
-
-::v-deep .el-menu-item, ::v-deep .el-submenu__title {
-  height: 50px;
-  line-height: 50px;
-  margin: 6px 10px;
-  border-radius: 14px;
-}
-
-::v-deep .el-menu-item.is-active {
-  background-image: linear-gradient(135deg, rgba(45, 107, 255, 1), rgba(25, 198, 210, 0.9)) !important;
-  color: #fff !important;
-}
-
-::v-deep .el-menu-item:hover, ::v-deep .el-submenu__title:hover {
-  background-color: rgba(255, 255, 255, 0.08) !important;
-}
-
-.main-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background-color: transparent;
-}
-
-.header {
-  height: 60px;
-  background-color: rgba(255, 255, 255, 0.76);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  z-index: 1000;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
-}
-
-/* 深色主题下的头部 */
-.dark-theme .header {
-  background-color: var(--header-bg);
-  border-bottom-color: var(--border-color);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-}
-
-.header-left .el-button {
-  margin-right: 20px;
-  font-size: 20px;
-  color: #5a5e66;
-}
-
-.header-left .el-button:hover {
-  color: var(--primary-color);
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 4px 12px;
-  border-radius: 20px;
-  transition: all 0.3s;
-}
-
-.user-info:hover {
-  background-color: rgba(0,0,0,0.025);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-.username {
-  margin: 0 8px;
-  font-size: 14px;
-  color: #606266;
-  font-weight: 500;
-}
-
-/* 深色主题下的用户名 */
-.dark-theme .username {
-  color: var(--text-regular);
-}
-
-.content {
-  flex: 1;
-  padding: 24px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-/* 深色主题下的内容区 */
-.dark-theme .content {
-  background-color: var(--bg-color);
-}
-
-/* 移除重复的 fade-transform 动画，已在 App.vue 全局定义 */
 </style>

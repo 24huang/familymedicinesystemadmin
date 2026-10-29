@@ -7,6 +7,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 // 引入主题变量（深色/浅色模式）
 import '@/assets/css/theme-variables.css'
+import '@/assets/css/motion.css'
 
 Vue.config.productionTip = false
 // 新增：使用 Element UI 和路由

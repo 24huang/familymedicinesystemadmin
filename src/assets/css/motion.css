@@ -1,0 +1,98 @@
+/* 沿用现有主题变量，动效不参与路由、表单或主题状态管理。 */
+:root {
+  --motion-fast: 120ms;
+  --motion-base: 220ms;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 复用已有入场类；覆盖旧的长延时，避免操作区域迟到或重复浮动。 */
+.animate-fade-in-up {
+  animation-name: appFadeInUp;
+  animation-duration: var(--motion-base);
+  animation-timing-function: var(--motion-ease);
+  animation-delay: 0ms !important;
+  animation-fill-mode: backwards;
+}
+
+@keyframes appFadeInUp {
+  from { opacity:0; transform:translateY(8px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.fade-transform-enter-active {
+  transition:opacity var(--motion-base) var(--motion-ease),transform var(--motion-base) var(--motion-ease);
+}
+.fade-transform-leave-active {
+  transition:opacity var(--motion-fast) ease,transform var(--motion-fast) ease;
+}
+.fade-transform-enter { opacity:0; transform:translateY(8px); }
+.fade-transform-leave-to { opacity:0; transform:translateY(-4px); }
+
+.el-input__inner,
+.el-textarea__inner {
+  transition: border-color var(--motion-fast) ease, box-shadow var(--motion-fast) ease;
+}
+
+.el-input__inner:focus,
+.el-textarea__inner:focus {
+  box-shadow: 0 0 0 3px rgba(45, 107, 255, 0.12);
+}
+
+.el-button:not(.is-disabled):not(.is-loading):active {
+  transform: translateY(0) scale(0.98);
+}
+
+.el-button:focus-visible,
+.theme-button:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 3px;
+}
+
+/* 只给可点击入口轻量反馈，不移动包含输入或表格的整张卡片。 */
+@media (hover: hover) and (pointer: fine) {
+  .quick-actions .action-item {
+    transition: transform var(--motion-base) var(--motion-ease);
+  }
+  .quick-actions .action-item:hover {
+    transform: translateY(-3px);
+  }
+}
+
+/* 包含路由、侧栏、主题图标及Element弹层；保留可见性和最终布局。 */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .fade-transform-enter-active,
+  .fade-transform-leave-active,
+  .theme-icon-enter-active,
+  .theme-icon-leave-active,
+  .el-dialog__wrapper,
+  .el-dialog,
+  .el-collapse-transition,
+  .el-menu--collapse,
+  .el-submenu__icon-arrow,
+  .el-card,
+  .el-button,
+  .el-input__inner,
+  .el-textarea__inner,
+  .sidebar,
+  .sidebar .logo,
+  .theme-button,
+  .theme-icon,
+  .quick-actions .action-item {
+    animation: none !important;
+    transition: none !important;
+  }
+  .fade-transform-enter,
+  .fade-transform-leave-to,
+  .theme-icon-enter,
+  .theme-icon-leave-to {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .el-button:active,
+  .el-button:hover,
+  .theme-button:hover,
+  .theme-button:active,
+  .quick-actions .action-item:hover {
+    transform: none !important;
+  }
+}

@@ -3,8 +3,9 @@
     <!-- Welcome Section -->
     <div class="welcome-section animate-fade-in-up">
       <div class="welcome-text">
+        <span class="workspace-kicker">FAMILY CARE / 工作台</span>
         <h2>{{timePeriod}}，管理员</h2>
-        <p>祝您今天心情愉快，家庭健康！</p>
+        <p>从用药计划到健康档案，今天的家庭照护从这里开始。</p>
       </div>
       <img src="@/assets/logo.svg" class="welcome-img" />
     </div>
@@ -13,7 +14,7 @@
     <el-row :gutter="20" class="stat-cards">
       <el-col :span="6" v-for="(item, index) in filteredCards" :key="index">
         <el-card shadow="hover" class="stat-card-container animate-fade-in-up" :style="{ animationDelay: (index * 0.1 + 0.2) + 's' }" :body-style="{ padding: '20px', display: 'flex', alignItems: 'center' }">
-          <div class="stat-icon" :style="{ backgroundColor: item.color }">
+          <div class="stat-icon" :style="{ '--stat-accent': item.color }">
             <i :class="item.icon"></i>
           </div>
           <div class="stat-info">
@@ -33,22 +34,10 @@
             <span><i class="el-icon-lightning"></i> 快捷操作</span>
           </div>
           <div class="quick-actions">
-            <div class="action-item" @click="$router.push('/drug')">
-              <div class="action-icon bg-blue"><i class="el-icon-first-aid-kit"></i></div>
-              <span>添加药品</span>
-            </div>
-            <div class="action-item" @click="$router.push('/medication/plan')">
-              <div class="action-icon bg-green"><i class="el-icon-alarm-clock"></i></div>
-              <span>设置提醒</span>
-            </div>
-            <div class="action-item" @click="$router.push('/member')">
-              <div class="action-icon bg-orange"><i class="el-icon-user"></i></div>
-              <span>成员管理</span>
-            </div>
-            <div class="action-item" @click="$router.push('/category')">
-              <div class="action-icon bg-purple"><i class="el-icon-menu"></i></div>
-              <span>分类管理</span>
-            </div>
+            <button type="button" class="action-item" @click="$router.push('/drug')"><span class="action-icon bg-blue"><i class="el-icon-first-aid-kit"></i></span><span>添加药品</span></button>
+            <button type="button" class="action-item" @click="$router.push('/medication/plan')"><span class="action-icon bg-green"><i class="el-icon-alarm-clock"></i></span><span>设置提醒</span></button>
+            <button type="button" class="action-item" @click="$router.push('/member')"><span class="action-icon bg-orange"><i class="el-icon-user"></i></span><span>成员管理</span></button>
+            <button type="button" class="action-item" @click="$router.push('/category')"><span class="action-icon bg-purple"><i class="el-icon-menu"></i></span><span>分类管理</span></button>
           </div>
         </el-card>
 
@@ -258,194 +247,29 @@ export default {
 </script>
 
 <style scoped>
-.home-container {
-  padding: 20px;
-}
+.home-container { max-width:1500px; margin:0 auto; }
+.welcome-section { display:flex; justify-content:space-between; align-items:center; padding:10px 0 26px; gap:20px; }
+.workspace-kicker { display:block; font-size:10px; letter-spacing:2px; color:var(--primary-color); font-weight:650; margin-bottom:10px; }
+.welcome-text h2 { font-size:28px; font-weight:650; letter-spacing:-.5px; color:var(--text-primary); margin:0 0 8px; }
+.welcome-text p { color:var(--text-secondary); font-size:13px; margin:0; }
+.welcome-img { height:48px; opacity:.8; }
+.stat-card-container { margin-bottom:24px; }
+.stat-icon { width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center; margin-right:16px; background:var(--bg-secondary); color:var(--stat-accent,var(--primary-color)); font-size:22px; }
+.stat-value { font-size:30px; line-height:1.25; font-weight:650; color:var(--text-primary); font-variant-numeric:tabular-nums; letter-spacing:-.8px; }
+.stat-label { font-size:12px; color:var(--text-secondary); margin-top:6px; }
+.mb-20 { margin-bottom:22px; }
+.quick-actions { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.action-item { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:18px 8px; border:1px solid var(--border-light); border-radius:12px; background:var(--bg-secondary); color:var(--text-regular); cursor:pointer; font-size:12px; }
+.action-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; }
+.bg-blue { background:rgba(50,104,218,.09); color:var(--primary-color); }
+.bg-green { background:rgba(36,132,106,.09); color:var(--success-color); }
+.bg-orange { background:rgba(186,123,36,.09); color:var(--warning-color); }
+.bg-purple { background:rgba(119,99,175,.09); color:#9a82c8; }
+.health-tip-container { padding:25px; background:var(--active-bg); color:var(--text-primary); border-left:3px solid var(--primary-color); }
+.health-tip-container h3 { font-size:15px; margin:0 0 12px; }
+.health-tip-container p { font-size:13px; color:var(--text-regular); margin:0; line-height:1.9; }
+.plan-scroll { max-height:360px; overflow-y:auto; padding:5px 4px 0 0; }
+.clearfix:after { content:""; display:table; clear:both; }
+@media(max-width:1000px){.quick-actions{grid-template-columns:repeat(2,1fr)}.stat-icon{display:none}.welcome-text h2{font-size:24px}.stat-cards{display:flex;flex-wrap:wrap}.stat-cards .el-col{width:50%}.dashboard-content>.el-col{width:100%}}
 
-.welcome-section {
-  background: var(--card-bg);
-  padding: 20px 30px;
-  border-radius: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-light);
-}
-
-.welcome-text h2 {
-  font-size: 24px;
-  color: var(--text-primary);
-  margin-bottom: 10px;
-}
-
-.welcome-text p {
-  color: var(--text-secondary);
-}
-
-.welcome-img {
-  height: 80px;
-  opacity: 0.8;
-}
-
-.stat-card-container {
-  margin-bottom: 20px;
-  cursor: pointer;
-  transition: transform 0.3s;
-}
-
-.stat-card-container:hover {
-  transform: translateY(-2px);
-}
-
-.stat-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 20px;
-  color: white;
-  font-size: 24px;
-}
-
-.stat-info .stat-value {
-  font-size: 24px;
-  font-weight: bold;
-  color: var(--text-primary);
-  margin-bottom: 5px;
-}
-
-.stat-info .stat-label {
-  color: var(--text-secondary);
-  font-size: 14px;
-}
-
-.mb-20 {
-  margin-bottom: 20px;
-}
-
-.quick-actions {
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
-}
-
-.action-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.action-item:hover {
-  transform: scale(1.05);
-}
-
-.action-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 24px;
-  margin-bottom: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-.bg-blue { background: linear-gradient(135deg, #409EFF, #36D1DC); }
-.bg-green { background: linear-gradient(135deg, #67C23A, #a8ff78); }
-.bg-orange { background: linear-gradient(135deg, #E6A23C, #f6d365); }
-.bg-purple { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
-
-.health-tip-container {
-  padding: 30px;
-  color: white;
-  background: linear-gradient(135deg, rgba(45, 107, 255, 1) 0%, rgba(25, 198, 210, 0.95) 100%);
-}
-
-.health-tip-container h3 {
-  margin-bottom: 10px;
-  font-size: 18px;
-}
-
-.plan-scroll {
-  max-height: 360px;
-  overflow-y: auto;
-  padding-right: 10px;
-  scroll-snap-type: y proximity;
-  overscroll-behavior: contain;
-}
-
-.plan-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(100, 116, 139, 0.35) transparent;
-}
-
-.plan-scroll::-webkit-scrollbar {
-  width: 8px;
-}
-
-.plan-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.plan-scroll::-webkit-scrollbar-thumb {
-  background-color: rgba(100, 116, 139, 0.35);
-  border-radius: 999px;
-  border: 2px solid transparent;
-  background-clip: content-box;
-}
-
-.plan-scroll::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(100, 116, 139, 0.5);
-}
-
-::v-deep .plan-scroll .el-timeline-item {
-  scroll-snap-align: start;
-}
-
-.clearfix:before,
-.clearfix:after {
-  display: table;
-  content: "";
-}
-.clearfix:after {
-  clear: both
-}
-
-/* 深色主题适配 */
-.dark-theme .welcome-section {
-  background: var(--card-bg) !important;
-  border-color: var(--border-color) !important;
-}
-
-.dark-theme .welcome-text h2 {
-  color: var(--text-primary) !important;
-}
-
-.dark-theme .welcome-text p {
-  color: var(--text-secondary) !important;
-}
-
-.dark-theme .stat-info .stat-value {
-  color: var(--text-primary) !important;
-}
-
-.dark-theme .stat-info .stat-label {
-  color: var(--text-secondary) !important;
-}
-
-.dark-theme .quick-actions span {
-  color: var(--text-regular) !important;
-}
-
-.dark-theme .health-tip-container {
-  color: #ffffff !important;
-}
 </style>

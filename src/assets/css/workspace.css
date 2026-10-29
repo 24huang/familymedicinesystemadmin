@@ -1,0 +1,80 @@
+/* 工作台视觉基础；业务组件继续使用原有Element UI结构与事件。 */
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg-color); color:var(--text-primary); font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif; -webkit-font-smoothing:antialiased; }
+button,input,select,textarea { font-family:inherit; }
+#app { min-height:100vh; }
+::-webkit-scrollbar { width:7px; height:7px; }
+::-webkit-scrollbar-thumb { background:var(--border-color); border-radius:8px; }
+::-webkit-scrollbar-track { background:transparent; }
+
+.layout-container .el-card { background:var(--card-bg); border:1px solid var(--border-color); border-radius:16px; color:var(--text-primary); box-shadow:var(--shadow-light); }
+.layout-container .el-card__header { padding:19px 23px; border-color:var(--border-light); font-weight:650; font-size:14px; }
+.layout-container .el-card__header i { color:var(--text-secondary); margin-right:6px; }
+.layout-container .el-card__body { padding:22px; }
+.layout-container .table-container { margin-top:20px; }
+.layout-container .table-header { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.layout-container .el-form-item { margin-bottom:16px; }
+.layout-container .el-form-item__label { color:var(--text-regular); font-weight:500; }
+.layout-container .el-button { border-radius:8px; font-weight:550; box-shadow:none; transition:transform var(--motion-fast) ease,background-color var(--motion-fast) ease,border-color var(--motion-fast) ease; }
+.layout-container .el-button--default { background:var(--card-bg); border-color:var(--border-color); color:var(--text-regular); }
+.layout-container .el-button--default:hover { background:var(--hover-bg); border-color:var(--primary-color); color:var(--primary-color); }
+.layout-container .el-button--primary,.el-dialog .el-button--primary { background:#3268da; border-color:#3268da; color:#fff; }
+.layout-container .el-button--primary:hover,.el-dialog .el-button--primary:hover { background:#2459c5; border-color:#2459c5; }
+.layout-container .el-button--text { color:var(--primary-color); }
+.layout-container .el-button.is-disabled { opacity:.5; }
+.el-input .el-input__inner,.el-textarea .el-textarea__inner { border-radius:8px; color:var(--text-primary); background:var(--bg-secondary); border-color:var(--border-color); }
+.el-input .el-input__inner::placeholder,.el-textarea .el-textarea__inner::placeholder { color:var(--text-placeholder); }
+.el-input .el-input__inner:focus,.el-textarea .el-textarea__inner:focus { border-color:var(--primary-color); }
+.el-input.is-disabled .el-input__inner { color:var(--text-secondary); background:var(--bg-secondary); opacity:.6; }
+.el-input-group__append { background:var(--bg-secondary); color:var(--text-regular); border-color:var(--border-color); }
+
+.layout-container .el-table { color:var(--text-regular); background:var(--card-bg); border:0; border-radius:10px; font-size:13px; }
+.layout-container .el-table:before,.layout-container .el-table--border:after { background:var(--border-color); }
+.layout-container .el-table th.el-table__cell { background:var(--bg-secondary); color:var(--text-secondary); font-weight:550; border-color:var(--border-light); padding:13px 0; }
+.layout-container .el-table td.el-table__cell { background:var(--card-bg); border-color:var(--border-light); padding:15px 0; }
+.layout-container .el-table--border .el-table__cell { border-right:0; }
+.layout-container .el-table .cell { line-height:1.65; padding:0 14px; }
+.layout-container .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell { background:var(--bg-secondary); }
+.layout-container .el-table--enable-row-hover .el-table__body tr:hover>td { background:var(--hover-bg); }
+.layout-container .el-table__body tr.current-row>td { background:var(--active-bg); }
+.layout-container .el-table__empty-text { color:var(--text-secondary); }
+.layout-container .el-table__fixed-right:before,.layout-container .el-table__fixed:before { background:var(--border-color); }
+.layout-container .el-table__fixed-right-patch { background:var(--bg-secondary); border-color:var(--border-color); }
+.layout-container .el-pagination { margin-top:18px; font-weight:400; color:var(--text-regular); }
+.layout-container .el-pagination button,.layout-container .el-pagination .el-pager li { background:var(--card-bg); color:var(--text-regular); border-radius:7px; }
+.layout-container .el-pagination .el-pager li.active { color:var(--primary-color); }
+.layout-container .el-pagination.is-background .el-pager li:not(.disabled).active { background:#3268da; color:white; }
+.layout-container .el-pagination__total,.layout-container .el-pagination__jump { color:var(--text-secondary); }
+.layout-container .el-tag { border:0; border-radius:6px; background:var(--active-bg); color:var(--primary-color); }
+.layout-container .el-tag--success { background:rgba(36,132,106,.1); color:var(--success-color); }
+.layout-container .el-tag--warning { background:rgba(186,123,36,.1); color:var(--warning-color); }
+.layout-container .el-tag--danger { background:rgba(199,79,90,.1); color:var(--danger-color); }
+.layout-container .el-tag--info { background:var(--bg-secondary); color:var(--text-secondary); }
+
+/* 下拉和弹层在body下挂载，使用相同主题变量，避免深色模式出现白底。 */
+body .el-select-dropdown,body .el-dropdown-menu,body .el-picker-panel,body .el-dialog,body .el-message-box { background:var(--card-bg); color:var(--text-primary); border-color:var(--border-color); border-radius:12px; }
+body .el-select-dropdown__item,body .el-dropdown-menu__item { color:var(--text-regular); }
+body .el-select-dropdown__item.hover,body .el-select-dropdown__item:hover,body .el-dropdown-menu__item:hover { background:var(--hover-bg); color:var(--primary-color); }
+body .el-dialog__title,body .el-message-box__title { color:var(--text-primary); font-size:18px; font-weight:650; }
+body .el-dialog__body,body .el-message-box__content { color:var(--text-regular); }
+body .el-dialog .el-button--default,body .el-message-box .el-button--default { background:var(--card-bg); border-color:var(--border-color); color:var(--text-regular); }
+body .el-dialog .el-button--default:hover,body .el-message-box .el-button--default:hover { background:var(--hover-bg); border-color:var(--primary-color); color:var(--primary-color); }
+body .el-input-number__increase,body .el-input-number__decrease { background:var(--bg-secondary); border-color:var(--border-color); color:var(--text-secondary); }
+body .el-input-number__increase:hover,body .el-input-number__decrease:hover { color:var(--primary-color); }
+body .el-radio__inner,body .el-checkbox__inner { background:var(--bg-secondary); border-color:var(--text-placeholder); }
+body .el-radio__input.is-checked .el-radio__inner,body .el-checkbox__input.is-checked .el-checkbox__inner { background:#3268da; border-color:#3268da; }
+body .el-form-item__label { color:var(--text-regular); }
+body .el-radio__label,body .el-checkbox__label,body .el-tabs__item { color:var(--text-regular); }
+body .el-radio.is-checked .el-radio__label,body .el-checkbox.is-checked .el-checkbox__label,body .el-tabs__item.is-active { color:var(--primary-color); }
+body .el-select-dropdown__item.selected { color:var(--primary-color); }
+body .el-popper[x-placement^=bottom] .popper__arrow::after { border-bottom-color:var(--card-bg); }
+body .el-popper[x-placement^=top] .popper__arrow::after { border-top-color:var(--card-bg); }
+body .el-picker-panel__footer,body .el-date-picker__header-label,body .el-date-table th,body .el-picker-panel__icon-btn { background:var(--card-bg); color:var(--text-regular); border-color:var(--border-color); }
+body .el-date-table td.disabled div { background:var(--bg-secondary); color:var(--text-secondary); }
+body .el-empty__description p { color:var(--text-secondary); }
+.layout-container .el-timeline-item__content,.layout-container .el-timeline-item__timestamp { color:var(--text-regular); }
+.layout-container .el-timeline-item__tail { border-color:var(--border-color); }
+.layout-container .el-page-header__content { color:var(--text-primary); }
+.layout-container .el-progress-bar__outer { background:var(--bg-secondary); }
+
+@media(max-width:1100px) { .layout-container .el-card__body { padding:16px; } .layout-container .el-table .cell { padding:0 9px; } }

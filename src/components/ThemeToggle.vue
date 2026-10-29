@@ -1,14 +1,14 @@
 <template>
   <div class="theme-toggle">
     <el-tooltip :content="isDark ? '切换到浅色模式' : '切换到深色模式'" placement="bottom">
-      <div class="theme-button" @click="toggleTheme">
+      <button type="button" class="theme-button" :aria-label="isDark ? '切换到浅色模式' : '切换到深色模式'" :aria-pressed="isDark" @click="toggleTheme">
         <transition name="theme-icon" mode="out-in">
           <i :key="isDark ? 'moon' : 'sun'" 
              :class="isDark ? 'el-icon-moon' : 'el-icon-sunny'"
              class="theme-icon">
           </i>
         </transition>
-      </div>
+      </button>
     </el-tooltip>
   </div>
 </template>
@@ -145,86 +145,12 @@ export default {
 </script>
 
 <style scoped>
-.theme-toggle {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 10px;
-}
-
-/* 主题切换按钮 */
-.theme-button {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--card-bg), var(--bg-secondary));
-  border: 2px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: relative;
-  overflow: hidden;
-}
-
-/* 按钮悬停效果 */
-.theme-button:hover {
-  transform: scale(1.1) rotate(15deg);
-  box-shadow: 0 4px 16px rgba(64, 158, 255, 0.3);
-  border-color: var(--primary-color);
-}
-
-/* 按钮点击效果 */
-.theme-button:active {
-  transform: scale(0.95);
-}
-
-/* 图标样式 */
-.theme-icon {
-  font-size: 20px;
-  color: var(--primary-color);
-  transition: all 0.3s ease;
-}
-
-/* 深色模式下的图标 */
-.dark-theme .theme-button {
-  background: linear-gradient(135deg, rgba(45, 45, 45, 0.8), rgba(31, 31, 31, 0.6));
-  border-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
-}
-
-.dark-theme .theme-button:hover {
-  box-shadow: 0 4px 20px rgba(64, 158, 255, 0.4);
-  border-color: var(--primary-color);
-}
-
-.dark-theme .theme-icon {
-  color: #ffd700;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-}
-
-/* 图标切换动画 */
-.theme-icon-enter-active {
-  transition: all 0.3s ease;
-}
-
-.theme-icon-leave-active {
-  transition: all 0.3s ease;
-}
-
-.theme-icon-enter {
-  transform: rotate(-180deg) scale(0);
-  opacity: 0;
-}
-
-.theme-icon-leave-to {
-  transform: rotate(180deg) scale(0);
-  opacity: 0;
-}
-
-/* 深色主题下的特定样式 */
-.dark-theme .theme-button:hover {
-  background: linear-gradient(135deg, rgba(50, 50, 50, 0.9), rgba(35, 35, 35, 0.7));
-}
+.theme-toggle { display:inline-flex;align-items:center; }
+.theme-button { width:36px;height:36px;border-radius:10px;background:var(--bg-secondary);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:transform var(--motion-base) var(--motion-ease),border-color var(--motion-fast) ease; }
+.theme-button:hover { transform:rotate(8deg);border-color:var(--primary-color); }
+.theme-button:active { transform:scale(.96); }
+.theme-icon { font-size:18px;color:var(--primary-color); }
+.theme-icon-enter-active,.theme-icon-leave-active {transition:opacity var(--motion-fast) ease,transform var(--motion-fast) var(--motion-ease)}
+.theme-icon-enter {transform:rotate(-35deg) scale(.8);opacity:0}
+.theme-icon-leave-to {transform:rotate(35deg) scale(.8);opacity:0}
 </style>
